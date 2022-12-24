@@ -13,10 +13,10 @@ public class Vehicle {
 
     public Vehicle(Long id, String name, String mfd, Long mileage, String type, String brand, String model) {
         this.id = id;
-        this.name = name;
-        this.mfd = mfd;
-        this.mileage = mileage;
-        this.type = type;
+        this.name = name; //show
+        this.mfd = mfd;  //show
+        this.mileage = mileage;  //show
+        this.type = type;  //show
         this.brand = brand;
         this.model = model;
     }

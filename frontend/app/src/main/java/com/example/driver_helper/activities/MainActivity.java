@@ -1,4 +1,4 @@
-package com.example.driver_helper;
+package com.example.driver_helper.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +13,7 @@ import android.util.Log;
 import android.util.Xml;
 import android.widget.TextView;
 
+import com.example.driver_helper.R;
 import com.example.driver_helper.adapters.DataAdapter;
 import com.example.driver_helper.adapters.ToolAdapter;
 import com.example.driver_helper.adapters.VehicleAdapter;
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     String urlMaintenance = "http://192.168.1.111:8080/maintenance/all";
     String urlGas = "https://vipmbr.cpc.com.tw/CPCSTN/ListPriceWebService.asmx/getCPCMainProdListPrice_XML";
     XmlPullParser pullParser = Xml.newPullParser();
+
     List<Gas> lstGas = new ArrayList<>();
     Gas gas = null;
     List<Vehicle> lstVehicle = new ArrayList<>();

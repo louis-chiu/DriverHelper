@@ -31,7 +31,7 @@
             android:layout_height="65dp"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="新增加油紀錄"
+            android:text="車輛1"
             android:textAlignment="center"
             android:textColor="#000000"
             android:textSize="20sp" />

@@ -4,8 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,10 +14,8 @@ import com.example.driver_helper.pojo.MaintenanceRecord;
 import com.example.driver_helper.pojo.RefuelingRecord;
 import com.example.driver_helper.pojo.Vehicle;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 public class DataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     int row_index;
@@ -38,7 +34,7 @@ public class DataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_page, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.page_vhicle_data, parent, false);
         return new DataAdapter.PageViewHolder(itemView);
     }
 
