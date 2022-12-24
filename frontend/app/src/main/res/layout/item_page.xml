@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/imageViewData1"
+        android:layout_width="115dp"
+        android:layout_height="115dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/shape_circle"
+        app:layout_constraintEnd_toStartOf="@+id/imageViewData2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewCarName"
+        tools:ignore="MissingConstraints" />
+
+    <ImageView
+        android:id="@+id/imageViewData2"
+        android:layout_width="115dp"
+        android:layout_height="115dp"
+        android:layout_gravity="center"
+        android:background="@drawable/shape_circle"
+        app:layout_constraintEnd_toStartOf="@+id/imageViewData3"
+        app:layout_constraintStart_toEndOf="@+id/imageViewData1"
+        app:layout_constraintTop_toTopOf="@+id/imageViewData1"
+        tools:ignore="MissingConstraints" />
+
+    <ImageView
+        android:id="@+id/imageViewData3"
+        android:layout_width="115dp"
+        android:layout_height="115dp"
+        android:layout_gravity="center"
+        android:background="@drawable/shape_circle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imageViewData2"
+        app:layout_constraintTop_toTopOf="@+id/imageViewData2"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/textViewUnit1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="元"
+        android:textColor="#000000"
+        app:layout_constraintEnd_toEndOf="@+id/imageViewData1"
+        app:layout_constraintStart_toStartOf="@+id/imageViewData1"
+        app:layout_constraintTop_toTopOf="@+id/imageViewData1" />
+
+    <TextView
+        android:id="@+id/textViewUnit2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="公里"
+        android:textColor="#000000"
+        app:layout_constraintEnd_toEndOf="@+id/imageViewData2"
+        app:layout_constraintStart_toStartOf="@+id/imageViewData2"
+        app:layout_constraintTop_toTopOf="@+id/imageViewData2" />
+
+    <TextView
+        android:id="@+id/textViewUnit3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="元"
+        android:textColor="#000000"
+        app:layout_constraintEnd_toEndOf="@+id/imageViewData3"
+        app:layout_constraintStart_toStartOf="@+id/imageViewData3"
+        app:layout_constraintTop_toTopOf="@+id/imageViewData3" />
+
+    <TextView
+        android:id="@+id/textViewName1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="總支出"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageViewData1"
+        app:layout_constraintEnd_toEndOf="@+id/imageViewData1"
+        app:layout_constraintStart_toStartOf="@+id/imageViewData1" />
+
+    <TextView
+        android:id="@+id/textViewName2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="總里程"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageViewData2"
+        app:layout_constraintEnd_toEndOf="@+id/imageViewData2"
+        app:layout_constraintStart_toStartOf="@+id/imageViewData2" />
+
+    <TextView
+        android:id="@+id/textViewName3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="上筆支出"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageViewData3"
+        app:layout_constraintEnd_toEndOf="@+id/imageViewData3"
+        app:layout_constraintStart_toStartOf="@+id/imageViewData3" />
+
+    <TextView
+        android:id="@+id/textViewNumber1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:text="888888"
+        android:textColor="#000000"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/imageViewData1"
+        app:layout_constraintEnd_toEndOf="@+id/imageViewData1"
+        app:layout_constraintStart_toStartOf="@+id/imageViewData1"
+        app:layout_constraintTop_toTopOf="@+id/imageViewData1" />
+
+    <TextView
+        android:id="@+id/textViewNumber2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:text="123456"
+        android:textColor="#000000"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/imageViewData2"
+        app:layout_constraintEnd_toEndOf="@+id/imageViewData2"
+        app:layout_constraintStart_toStartOf="@+id/imageViewData2"
+        app:layout_constraintTop_toTopOf="@+id/imageViewData2" />
+
+    <TextView
+        android:id="@+id/textViewNumber3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:text="654321"
+        android:textColor="#000000"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/imageViewData3"
+        app:layout_constraintEnd_toEndOf="@+id/imageViewData3"
+        app:layout_constraintStart_toStartOf="@+id/imageViewData3"
+        app:layout_constraintTop_toTopOf="@+id/imageViewData3" />
+
+    <TextView
+        android:id="@+id/textViewCarName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:text="機車一"
+        android:textColor="#000000"
+        android:textSize="22sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
