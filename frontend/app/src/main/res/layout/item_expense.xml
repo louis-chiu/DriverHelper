@@ -15,44 +15,42 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="10dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
         >
+
         <TextView
+            android:id="@+id/itemExpense_tvDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2020/12/31"
-            android:textSize="22dp"
-            android:textColor="#ff000000"
             android:layout_weight="1"
             android:gravity="center"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="22dp"
+            android:text="2020/12/31"
             android:textColor="#ff000000"
-            android:text="換機油"
-            android:layout_weight="2"
-            android:gravity="center"/>
+            android:textSize="22dp" />
+
         <TextView
+            android:id="@+id/itemExpense_tvItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:text=""
+            android:textColor="#ff000000"
+            android:textSize="22dp" />
+
+        <TextView
+            android:id="@+id/itemExpense_tvPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center"
             android:text="$500"
             android:textColor="#ff000000"
-            android:textSize="22dp"
-            android:layout_weight="2"
-            android:gravity="center"/>
+            android:textSize="22dp" />
 
     </LinearLayout>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="備註一些有的沒的"
-        android:textSize="18dp"
-        android:textColor="#ff000000"
-        android:gravity="center"
-        android:layout_gravity="center"
-        android:layout_marginBottom="10dp"/>
+
     <com.google.android.material.divider.MaterialDivider
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

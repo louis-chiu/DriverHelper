@@ -1,25 +1,26 @@
 package com.example.driver_helper.pojo;
 
-public class MaintenanceRecord {
+import java.io.Serializable;
+
+@SuppressWarnings("serial")
+public class MaintenanceRecord extends Record implements Serializable {
 
     private Long mid;
-    private String mdate;
-    private String items;
+    private String date;
+    private String item;
     private Long price;
     private String notes;
-
-
-
     private Long vid;
 
-    public MaintenanceRecord(Long mid, String mdate, String items, Long price, String notes, Long vid) {
+    public MaintenanceRecord(Long mid, String date, String item, Long price, String notes, Long vid) {
         this.mid = mid;
-        this.mdate = mdate;
-        this.items = items;
+        this.date = date;
+        this.item = item;
         this.price = price;
         this.notes = notes;
         this.vid = vid;
     }
+
 
     public Long getMid() {
         return mid;
@@ -29,34 +30,42 @@ public class MaintenanceRecord {
         this.mid = mid;
     }
 
-    public String getMdate() {
-        return mdate;
+    @Override
+    public String getDate() {
+        return date;
     }
 
-    public void setMdate(String mdate) {
-        this.mdate = mdate;
+    @Override
+    public void setDate(String date) {
+        this.date = date;
     }
 
-    public String getItems() {
-        return items;
+    @Override
+    public String getItem() {
+        return item;
     }
 
-    public void setItems(String items) {
-        this.items = items;
+    @Override
+    public void setItem(String item) {
+        this.item = item;
     }
 
+    @Override
     public Long getPrice() {
         return price;
     }
 
+    @Override
     public void setPrice(Long price) {
         this.price = price;
     }
 
+    @Override
     public String getNotes() {
         return notes;
     }
 
+    @Override
     public void setNotes(String notes) {
         this.notes = notes;
     }
@@ -67,18 +76,5 @@ public class MaintenanceRecord {
 
     public void setVid(Long vid) {
         this.vid = vid;
-    }
-
-
-    @Override
-    public String toString() {
-        return "MaintenanceRecord{" +
-                "mid=" + mid +
-                ", mdate='" + mdate + '\'' +
-                ", items='" + items + '\'' +
-                ", price=" + price +
-                ", notes='" + notes + '\'' +
-                ", vid=" + vid +
-                '}';
     }
 }

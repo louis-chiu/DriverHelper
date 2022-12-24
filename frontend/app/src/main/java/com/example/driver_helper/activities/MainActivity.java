@@ -14,11 +14,12 @@ import android.util.Xml;
 import android.widget.TextView;
 
 import com.example.driver_helper.R;
-import com.example.driver_helper.adapters.DataAdapter;
-import com.example.driver_helper.adapters.ToolAdapter;
-import com.example.driver_helper.adapters.VehicleAdapter;
+import com.example.driver_helper.main.adapters.DataAdapter;
+import com.example.driver_helper.main.adapters.ToolAdapter;
+import com.example.driver_helper.main.adapters.VehicleAdapter;
 import com.example.driver_helper.pojo.Gas;
 import com.example.driver_helper.pojo.MaintenanceRecord;
+import com.example.driver_helper.pojo.Record;
 import com.example.driver_helper.pojo.RefuelingRecord;
 import com.example.driver_helper.pojo.Tool;
 import com.example.driver_helper.pojo.Vehicle;
@@ -56,8 +57,8 @@ public class MainActivity extends AppCompatActivity {
     List<Gas> lstGas = new ArrayList<>();
     Gas gas = null;
     List<Vehicle> lstVehicle = new ArrayList<>();
-    Map<Long,List<MaintenanceRecord>> mapMaintenanceRecord = new HashMap<>();
-    Map<Long,List<RefuelingRecord>> mapRefuelingRecord = new HashMap<>();
+    Map<Long,List<Record>> mapMaintenanceRecord = new HashMap<>();
+    Map<Long,List<Record>> mapRefuelingRecord = new HashMap<>();
     public static int vehicleNumber;
     List<Tool> lstTool = new ArrayList<>();
     List<Vehicle> lstVehicleForRV = new ArrayList<>();
@@ -118,12 +119,6 @@ public class MainActivity extends AppCompatActivity {
         toolListData();
 
         // ToolList RecyclerView
-        rvToolList = findViewById(R.id.recyclerViewToolList);
-        lmToolList = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-
-        toolAdapter = new ToolAdapter(MainActivity.this, lstTool);
-        rvToolList.setLayoutManager(lmToolList);
-        rvToolList.setAdapter(toolAdapter);
 
         // Vehicle RecyclerView Set on threadVehicle  !!!
 
@@ -289,7 +284,7 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //            TextView tv1 = findViewById(R.id.textView);
 //            tv1.setText(s1);
-            vehicleListRecyclerView();
+
             Log.w("ChiuVehicleJsonParserTest", String.valueOf(lstVehicle.size()));
             return true;
         }
@@ -389,9 +384,11 @@ public class MainActivity extends AppCompatActivity {
             Log.w("chiuTesting2", String.valueOf(mapRefuelingRecord.size()));
             Log.w("chiuTesting3", String.valueOf(lstVehicle.size()));
 
-            vpDataList = findViewById(R.id.ViewPager2DataList);
-            dataAdapter = new DataAdapter(MainActivity.this, lstVehicle, mapMaintenanceRecord, mapRefuelingRecord);
-            vpDataList.setAdapter(dataAdapter);
+            // load data to Adapter
+            toolListRecyclerView();
+            vehicleListRecyclerView();
+            dataListRecyclerView();
+
             return true;
         }
     }
@@ -470,27 +467,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void vehicleListRecyclerView(){
-        for (Vehicle v:lstVehicle) {
-            lstVehicleForRV.add(new Vehicle(v.getName(), v.getType()));
-        }
-        lstVehicleForRV.add(new Vehicle("新增車輛", "add"));
-
-        // set VehicleList RecyclerView
         rvVehicleList = findViewById(R.id.RecyclerViewVehicleList);
         lmVehicleList = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
 
-        vehicleAdapter = new VehicleAdapter(MainActivity.this, lstVehicleForRV);
+        vehicleAdapter = new VehicleAdapter(MainActivity.this, lstVehicle, mapMaintenanceRecord, mapRefuelingRecord);
         rvVehicleList.setLayoutManager(lmVehicleList);
         rvVehicleList.setAdapter(vehicleAdapter);
     }
 
-    private void dataListRecyclerview(){
+    private void dataListRecyclerView(){
         vpDataList = findViewById(R.id.ViewPager2DataList);
-//        lmDataList = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-
         dataAdapter = new DataAdapter(MainActivity.this, lstVehicle, mapMaintenanceRecord, mapRefuelingRecord);
-//        vpDataList.setLayoutManager(lmDataList);
         vpDataList.setAdapter(dataAdapter);
+    }
+
+    private void toolListRecyclerView(){
+        rvToolList = findViewById(R.id.recyclerViewToolList);
+        lmToolList = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+
+        toolAdapter = new ToolAdapter(MainActivity.this, lstTool, lstVehicle, mapMaintenanceRecord, mapRefuelingRecord);
+        rvToolList.setLayoutManager(lmToolList);
+        rvToolList.setAdapter(toolAdapter);
+
     }
 
 }
