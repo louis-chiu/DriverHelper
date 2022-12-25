@@ -45,7 +45,7 @@ public class VehiclesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         VehiclesAdapter.PageViewHolder pageViewHolder = (VehiclesAdapter.PageViewHolder) holder;
 
         Vehicle vehicle = lstVehicle.get(position);
-        pageViewHolder.rvRecord.setAdapter(new RecordAdapter(context, mapRecord.get(vehicle.getName()), vehicle.getName(), true));
+        pageViewHolder.rvRecord.setAdapter(new RecordAdapter(context, mapRecord.get(vehicle.getName()), vehicle, true));
         pageViewHolder.rvRecord.setRecycledViewPool(viewPool);
 
     }

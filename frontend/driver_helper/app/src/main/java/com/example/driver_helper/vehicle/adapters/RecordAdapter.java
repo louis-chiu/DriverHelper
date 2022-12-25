@@ -1,12 +1,14 @@
 package com.example.driver_helper.vehicle.adapters;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.driver_helper.R;
@@ -20,7 +22,7 @@ import java.util.List;
 
 public class RecordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private List<Record>lstRecord;
-    private String vehicleName;
+    private Vehicle vehicle;
     private Context context;
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
@@ -32,10 +34,10 @@ public class RecordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         this.lstRecord = lstRecord;
     }
 
-    public RecordAdapter(Context context, List<Record> lstRecord,String vehicleName, boolean isStatement) {
+    public RecordAdapter(Context context, List<Record> lstRecord,Vehicle vehicle, boolean isStatement) {
         this.lstRecord = lstRecord;
         this.context = context;
-        this.vehicleName = vehicleName;
+        this.vehicle = vehicle;
         this.isStatement = isStatement;
     }
 
@@ -71,7 +73,12 @@ public class RecordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }else if (holder instanceof StatementHeaderViewHolder){
             StatementHeaderViewHolder headerViewHolder = (StatementHeaderViewHolder) holder;
 
-            headerViewHolder.tvHeader.setText(vehicleName);
+            headerViewHolder.tvHeader.setText(" "+vehicle.getName());
+
+            Drawable leftDrawable = ContextCompat.getDrawable(context, VehicleActivity.getLogoSrc(vehicle));
+            leftDrawable.setBounds(0, 0, 120, 120);
+            headerViewHolder.tvHeader.setCompoundDrawables(leftDrawable, null, null, null);
+
             headerViewHolder.tvTotalExpense.setText(VehicleActivity.getExpense(lstRecord)+ " 元");
 
         }

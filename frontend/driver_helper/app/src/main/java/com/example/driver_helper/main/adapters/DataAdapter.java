@@ -1,12 +1,15 @@
 package com.example.driver_helper.main.adapters;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.driver_helper.R;
@@ -46,7 +49,13 @@ public class DataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         Vehicle vehicle = lstVehicle.get(position);
         List<Record> lstMaintenance = mapMaintenanceRecord.get(vehicle.getId());
         List<Record> lstRefueling = mapRefuelingRecord.get(vehicle.getId());
-        pageViewHolder.tvCarName.setText(vehicle.getName());
+        pageViewHolder.tvCarName.setText("  "+ vehicle.getName());
+
+        //設定圖片及大小
+        Drawable leftDrawable = ContextCompat.getDrawable(context, VehicleActivity.getLogoSrc(vehicle));
+        leftDrawable.setBounds(0, 0, 90, 90);
+        pageViewHolder.tvCarName.setCompoundDrawables(leftDrawable, null, null, null);
+
         pageViewHolder.tvName1.setText("總支出");
         pageViewHolder.tvName2.setText("總里程");
         pageViewHolder.tvName3.setText("上筆支出");

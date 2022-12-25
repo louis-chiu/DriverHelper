@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ConstrintLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="395dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="  修改車輛資訊"
+        android:gravity="center"
+        android:drawableStart="@drawable/edit"
+        android:textSize="24dp"
+        android:textColor="@color/black"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_gravity="center_vertical"
+
+                android:layout_weight="4"
+                android:layout_marginRight="5dp"
+                android:gravity="center_vertical|right"
+                android:text="車輛名稱："
+                android:textColor="#ff000000"
+                android:textSize="18dp" />
+
+            <EditText
+                android:id="@+id/edit_etName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="15dp"
+                android:layout_weight="1.75"
+                android:gravity="center"
+                android:textColor="#ff000000"
+                android:textSize="24dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_gravity="center_vertical"
+
+                android:layout_weight="4"
+                android:layout_marginRight="5dp"
+                android:gravity="center_vertical|right"
+                android:text="車輛種類："
+                android:textColor="#ff000000"
+                android:textSize="18dp" />
+
+            <EditText
+                android:id="@+id/edit_etType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="15dp"
+                android:layout_weight="1.75"
+                android:gravity="center"
+                android:textColor="#ff000000"
+                android:textSize="24dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_gravity="center_vertical"
+
+                android:layout_weight="4"
+                android:layout_marginRight="5dp"
+                android:gravity="center_vertical|right"
+                android:text="出廠日期："
+                android:textColor="#ff000000"
+                android:textSize="18dp" />
+
+            <EditText
+                android:id="@+id/edit_etDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="15dp"
+                android:layout_weight="1.75"
+                android:gravity="center"
+                android:textColor="#ff000000"
+                android:textSize="24dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_gravity="center_vertical"
+
+                android:layout_weight="4"
+                android:layout_marginRight="5dp"
+                android:gravity="center_vertical|right"
+                android:text="廠牌名稱："
+                android:textColor="#ff000000"
+                android:textSize="18dp" />
+
+            <EditText
+                android:id="@+id/edit_etBrand"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="15dp"
+                android:layout_weight="1.75"
+                android:gravity="center"
+                android:textColor="#ff000000"
+                android:textSize="24dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_gravity="center_vertical"
+
+                android:layout_weight="4"
+                android:layout_marginRight="5dp"
+                android:gravity="center_vertical|right"
+                android:text="車輛型號："
+                android:textColor="#ff000000"
+                android:textSize="18dp" />
+
+            <EditText
+                android:id="@+id/edit_etModel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="15dp"
+                android:layout_weight="1.75"
+                android:gravity="center"
+                android:textColor="#ff000000"
+                android:textSize="24dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_gravity="center_vertical"
+
+                android:layout_weight="4"
+                android:layout_marginRight="5dp"
+                android:gravity="center_vertical|right"
+                android:text="總計里程："
+                android:textColor="#ff000000"
+                android:textSize="18dp" />
+
+            <EditText
+                android:id="@+id/edit_etMileage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="15dp"
+                android:layout_weight="1.75"
+                android:gravity="center"
+                android:textColor="#ff000000"
+                android:textSize="24dp"
+                android:inputType="numberDecimal"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            >
+            <Button
+                android:id="@+id/btnCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="取消"
+                android:background="#00000000"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                android:textColor="#984B4B">
+            </Button>
+
+            <Button
+                android:id="@+id/btnConfirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:background="#00000000"
+                android:text="儲存"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                android:textColor="#A5A552"
+                >
+            </Button>
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

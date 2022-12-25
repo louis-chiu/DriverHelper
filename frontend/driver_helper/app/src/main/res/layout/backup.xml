@@ -112,6 +112,7 @@
                 android:text="里程累積提醒"
                 android:textSize="14dp" />
         </LinearLayout>
+
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -272,5 +273,7 @@
             android:layout_weight="2"
             />
     </LinearLayout>
+
+
     </androidx.appcompat.widget.LinearLayoutCompat>
 </androidx.constraintlayout.widget.ConstraintLayout>

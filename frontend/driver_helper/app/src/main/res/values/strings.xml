@@ -1,6 +1,8 @@
 <resources>
-    <string name="app_name">driver_helper</string>
+    <string name="app_name">Driver Helper</string>
     <string name="gas_price">即時油價資訊</string>
     <string name="tool_bar">快捷功能列</string>
     <string name="test">test</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -1,5 +1,7 @@
 package com.example.driver_helper.pojo;
 
+import com.google.gson.Gson;
+
 import java.io.Serializable;
 
 public class Vehicle implements Serializable {
@@ -11,7 +13,6 @@ public class Vehicle implements Serializable {
     private String type;
     private String brand;
     private String model;
-    private int img;
 
     public Vehicle(Long id, String name, String mfd, Long mileage, String type, String brand, String model) {
         this.id = id;
@@ -85,13 +86,7 @@ public class Vehicle implements Serializable {
         this.model = model;
     }
 
-    public int getImg() {
-        return img;
-    }
 
-    public void setImg(int img) {
-        this.img = img;
-    }
 
     @Override
     public String toString() {
@@ -105,7 +100,5 @@ public class Vehicle implements Serializable {
                 ", model='" + model + '\'' +
                 '}';
     }
-
-
 }
 

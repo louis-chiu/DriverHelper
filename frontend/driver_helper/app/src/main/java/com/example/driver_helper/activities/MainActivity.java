@@ -6,11 +6,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.util.Xml;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.driver_helper.R;
@@ -48,20 +51,20 @@ public class MainActivity extends AppCompatActivity {
     Handler refuelingJsonHandler = new Handler(new RefuelingJsonParser());
     Handler maintenanceJsonHandler = new Handler(new MaintenanceJsonParser());
 
-    String urlVehicle = "http://192.168.1.111:8080/vehicle/all";
-    String urlRefueling = "http://192.168.1.111:8080/refueling/all";
-    String urlMaintenance = "http://192.168.1.111:8080/maintenance/all";
+    String urlGetVehicle = "http://192.168.1.111:8080/vehicle/all";
+    String urlGetRefueling = "http://192.168.1.111:8080/refueling/all";
+    String urlGetMaintenance = "http://192.168.1.111:8080/maintenance/all";
     String urlGas = "https://vipmbr.cpc.com.tw/CPCSTN/ListPriceWebService.asmx/getCPCMainProdListPrice_XML";
     XmlPullParser pullParser = Xml.newPullParser();
 
-    List<Gas> lstGas = new ArrayList<>();
-    Gas gas = null;
-    List<Vehicle> lstVehicle = new ArrayList<>();
-    Map<Long,List<Record>> mapMaintenanceRecord = new HashMap<>();
-    Map<Long,List<Record>> mapRefuelingRecord = new HashMap<>();
+    List<Gas> lstGas;
+    Gas gas;
+    List<Vehicle> lstVehicle;
+    Map<Long,List<Record>> mapMaintenanceRecord;
+    Map<Long,List<Record>> mapRefuelingRecord;
     public static int vehicleNumber;
-    List<Tool> lstTool = new ArrayList<>();
-    List<Vehicle> lstVehicleForRV = new ArrayList<>();
+    List<Tool> lstTool;
+    List<Vehicle> lstVehicleForRV;
 
     LinearLayoutManager lmToolList;
     LinearLayoutManager lmVehicleList;
@@ -79,22 +82,39 @@ public class MainActivity extends AppCompatActivity {
     String jsonStr;
     String strResponse;
 
+
+    Button btn ;
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // get Gas data
+        // move to onStart();
+        // because we need to make sure UI will refresh
+        // when we update the data in the database
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        lstGas = new ArrayList<>();
+        lstVehicle = new ArrayList<>();
+        mapMaintenanceRecord = new HashMap<>();
+        mapRefuelingRecord = new HashMap<>();
+        lstTool = new ArrayList<>();
+        lstVehicleForRV = new ArrayList<>();
+
         Thread threadGas = new Thread(new GasApiThread(urlGas));
         threadGas.start();
 
         // get all Vehicle data
-        Thread threadVehicle = new Thread(new VehicleApiThread(urlVehicle));
+        Thread threadVehicle = new Thread(new VehicleApiThread(urlGetVehicle));
         threadVehicle.start();
 
         try {
-        // after threadVehicle finished
-        // threadRefueling and threadMaintenance start
+            // after threadVehicle finished
+            // threadRefueling and threadMaintenance start
             threadGas.join();
             threadVehicle.join();
         } catch (InterruptedException e) {
@@ -102,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // get all Maintenance Records
-        Thread threadMaintenance = new Thread(new MaintenanceApiThread(urlMaintenance));
+        Thread threadMaintenance = new Thread(new MaintenanceApiThread(urlGetMaintenance));
         threadMaintenance.start();
 
         try {
@@ -112,20 +132,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // get all Refueling Records
-        Thread threadRefueling = new Thread(new RefuelingApiThread(urlRefueling));
+        Thread threadRefueling = new Thread(new RefuelingApiThread(urlGetRefueling));
         threadRefueling.start();
 
         // ToolList Data initialize
         toolListData();
-
-        // ToolList RecyclerView
-
-        // Vehicle RecyclerView Set on threadVehicle  !!!
-
-
-
-
-
     }
 
     // Gas API Thread
@@ -278,12 +289,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
 
-//            for (Vehicle v:
-//                 lstVehicle) {
-//                s1 += v.toString()+"\n";
-//            }
-//            TextView tv1 = findViewById(R.id.textView);
-//            tv1.setText(s1);
 
             Log.w("ChiuVehicleJsonParserTest", String.valueOf(lstVehicle.size()));
             return true;
@@ -428,6 +433,8 @@ public class MainActivity extends AppCompatActivity {
         }
         return strTxt;
     }
+
+
 
     private void realtimeGasPrice(){
         TextView tvGasName1 = findViewById(R.id.tvGasName1);
