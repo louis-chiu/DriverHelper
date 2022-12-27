@@ -17,11 +17,11 @@ public class MaintenanceRecord {
     @Column(name = "Mid")
     private Long mid;
 
-    @Column(name = "Mdate")
-    private String mdate;
+    @Column(name = "date")
+    private String date;
 
-    @Column(name = "items")
-    private String items;
+    @Column(name = "item")
+    private String item;
 
     @Column(name = "price")
     private Long price;

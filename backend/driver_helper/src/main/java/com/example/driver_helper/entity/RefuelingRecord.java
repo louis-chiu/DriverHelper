@@ -18,14 +18,14 @@ public class RefuelingRecord {
     @Column(name = "Rid")
     private Long rid;
 
-    @Column(name = "Rdate")
-    private String rdate;
+    @Column(name = "date")
+    private String date;
 
-    @Column(name = "gas_type")
-    private String gastype;
+    @Column(name = "item")
+    private String item;
 
     @Column(name = "liter")
-    private Float liter;
+    private Double liter;
 
     @Column(name = "price")
     private Long price;

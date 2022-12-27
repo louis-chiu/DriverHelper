@@ -40,9 +40,9 @@ public class RefuelingRecordServiceImpl implements RefuelingRecordService{
         unwrapRecord.setRid(refuelingRecord.getRid());
         unwrapRecord.setNotes(refuelingRecord.getNotes());
         unwrapRecord.setLiter(refuelingRecord.getLiter());
-        unwrapRecord.setRdate(refuelingRecord.getRdate());
+        unwrapRecord.setDate(refuelingRecord.getDate());
         unwrapRecord.setPrice(refuelingRecord.getPrice());
-        unwrapRecord.setGastype(refuelingRecord.getGastype());
+        unwrapRecord.setItem(refuelingRecord.getItem());
         return refuelingRecordRepository.save(unwrapRecord);
     }
 

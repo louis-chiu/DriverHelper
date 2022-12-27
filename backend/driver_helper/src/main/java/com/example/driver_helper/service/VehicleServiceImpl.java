@@ -33,6 +33,7 @@ public class VehicleServiceImpl implements VehicleService{
         unwrapVehicle.setMfd(vehicle.getMfd());
         unwrapVehicle.setBrand(vehicle.getBrand());
         unwrapVehicle.setMileage(vehicle.getMileage());
+        unwrapVehicle.setType(vehicle.getType());
         unwrapVehicle.setModel(vehicle.getModel());
         unwrapVehicle.setName(vehicle.getName());
 

@@ -36,8 +36,8 @@ public class MaintenanceRecordServiceImpl implements MaintenanceRecordService{
         Optional<MaintenanceRecord> wrappedRecord = maintenanceRecordRepository.findById(mId);
         MaintenanceRecord unwrapRecord = unwrapMaintenanceRecord(wrappedRecord, mId);
         unwrapRecord.setMid(maintenanceRecord.getMid());
-        unwrapRecord.setMdate(maintenanceRecord.getMdate());
-        unwrapRecord.setItems(maintenanceRecord.getItems());
+        unwrapRecord.setDate(maintenanceRecord.getDate());
+        unwrapRecord.setItem(maintenanceRecord.getItem());
         unwrapRecord.setNotes(maintenanceRecord.getNotes());
         unwrapRecord.setPrice(maintenanceRecord.getPrice());
         return maintenanceRecordRepository.save(unwrapRecord);
