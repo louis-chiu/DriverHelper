@@ -75,7 +75,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             headerViewHolder.tvHeader.setText(" "+vehicle.getName());
 
-            Drawable leftDrawable = ContextCompat.getDrawable(context, VehicleActivity.getLogoSrc(vehicle));
+            Drawable leftDrawable = ContextCompat.getDrawable(context, VehicleActivity.getLogoSrc(context, vehicle));
             leftDrawable.setBounds(0, 0, 120, 120);
             headerViewHolder.tvHeader.setCompoundDrawables(leftDrawable, null, null, null);
 

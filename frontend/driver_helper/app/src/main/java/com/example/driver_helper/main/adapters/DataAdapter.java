@@ -52,7 +52,7 @@ public class DataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         pageViewHolder.tvCarName.setText("  "+ vehicle.getName());
 
         //設定圖片及大小
-        Drawable leftDrawable = ContextCompat.getDrawable(context, VehicleActivity.getLogoSrc(vehicle));
+        Drawable leftDrawable = ContextCompat.getDrawable(context, VehicleActivity.getLogoSrc(context ,vehicle));
         leftDrawable.setBounds(0, 0, 90, 90);
         pageViewHolder.tvCarName.setCompoundDrawables(leftDrawable, null, null, null);
 

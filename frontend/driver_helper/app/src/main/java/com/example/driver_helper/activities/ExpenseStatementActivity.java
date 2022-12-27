@@ -128,7 +128,7 @@ public class ExpenseStatementActivity extends AppCompatActivity {
         pieChart.setUsePercentValues(false);
         pieChart.setEntryLabelTextSize(12f);
         pieChart.setEntryLabelColor(Color.BLACK);
-        pieChart.setCenterText("總支出");
+        pieChart.setCenterText("總支出\n占比");
         pieChart.setCenterTextSize(20f);
         pieChart.getDescription().setEnabled(false);
 

@@ -314,8 +314,8 @@ public class MainActivity extends AppCompatActivity {
                     jsonObject = jsonArray.getJSONObject(i);
                     MaintenanceRecord maintenanceRecord = new MaintenanceRecord(
                             jsonObject.getLong("mid"),
-                            jsonObject.getString("mdate"),
-                            jsonObject.getString("items"),
+                            jsonObject.getString("date"),
+                            jsonObject.getString("item"),
                             jsonObject.getLong("price"),
                             jsonObject.getString("notes"),
                             jsonObject.getJSONObject("vehicle").getLong("id")
@@ -361,8 +361,8 @@ public class MainActivity extends AppCompatActivity {
                     jsonObject = jsonArray.getJSONObject(i);
                     RefuelingRecord refuelingRecord = new RefuelingRecord(
                             jsonObject.getLong("rid"),
-                            jsonObject.getString("rdate"),
-                            jsonObject.getString("gastype"),
+                            jsonObject.getString("date"),
+                            jsonObject.getString("item"),
                             jsonObject.getDouble("liter"),
                             jsonObject.getLong("price"),
                             jsonObject.getString("notes"),
@@ -374,19 +374,13 @@ public class MainActivity extends AppCompatActivity {
                 Log.w("ChiuRefuelingJsonParser", e);
             }
 
-//            for (List<RefuelingRecord> lst:
-//                    mapRefuelingRecord.values()) {
-//                for (RefuelingRecord r:
-//                lst) {
-//                    s3 += r.toString()+"\n";
-//                }
-//                s3+="!!!!!!!!!!!!!!\n";
-//            }
-//
-//            TextView tv3 = findViewById(R.id.textView3);
-//            tv3.setText(s3);
-            Log.w("chiuTesting1", String.valueOf(mapMaintenanceRecord.size()));
-            Log.w("chiuTesting2", String.valueOf(mapRefuelingRecord.size()));
+            Log.w("chiuTesting1", String.valueOf(mapMaintenanceRecord.get(0L)));
+            Log.w("chiuTesting1", String.valueOf(mapMaintenanceRecord.get(1L)));
+            Log.w("chiuTesting1", String.valueOf(mapMaintenanceRecord.get(2L)));
+            Log.w("chiuTesting1", String.valueOf(mapMaintenanceRecord.get(3L)));
+            Log.w("chiuTesting1", String.valueOf(mapMaintenanceRecord.get(4L)));
+            Log.w("chiuTesting1", String.valueOf(mapMaintenanceRecord.get(5L)));
+            Log.w("chiuTesting2", String.valueOf(mapRefuelingRecord.toString()));
             Log.w("chiuTesting3", String.valueOf(lstVehicle.size()));
 
             // load data to Adapter
@@ -492,7 +486,7 @@ public class MainActivity extends AppCompatActivity {
         rvToolList = findViewById(R.id.recyclerViewToolList);
         lmToolList = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
 
-        toolAdapter = new ToolAdapter(MainActivity.this, lstTool, lstVehicle, mapMaintenanceRecord, mapRefuelingRecord);
+        toolAdapter = new ToolAdapter(MainActivity.this, lstTool, lstVehicle, mapMaintenanceRecord, mapRefuelingRecord, lstGas);
         rvToolList.setLayoutManager(lmToolList);
         rvToolList.setAdapter(toolAdapter);
 

@@ -6,4 +6,9 @@
         android:icon="@drawable/edit"
         android:title="Edit"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/delete"
+        android:icon="@drawable/trash"
+        android:title="Delete"
+        app:showAsAction="ifRoom" />
 </menu>

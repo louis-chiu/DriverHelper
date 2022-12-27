@@ -14,6 +14,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,6 +37,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class VehicleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     int row_index;
@@ -76,7 +79,7 @@ public class VehicleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         VehicleAdapter.ItemViewHolder itemViewHolder = (VehicleAdapter.ItemViewHolder) holder;
         Vehicle vehicle;
 
@@ -96,16 +99,9 @@ public class VehicleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         List<Record> vehicleMaintenanceRecords = mapMaintenanceRecord.get(vehicle.getId());
 
         itemViewHolder.tv.setText(vehicle.getName());
-        if ("Car".equals(vehicle.getType())) {
-            itemViewHolder.iv.setImageResource(R.drawable.car);
-        } else if ("Scooter".equals(vehicle.getType())){
-            itemViewHolder.iv.setImageResource(R.drawable.scooter);
-        }else if ("Motorcycle".equals(vehicle.getType())){
-            itemViewHolder.iv.setImageResource(R.drawable.motorcycle);
-        }else if("add".equals(vehicle.getType())){
-            itemViewHolder.iv.setImageResource(R.drawable.add);
-        }
+        itemViewHolder.iv.setImageResource(VehicleActivity.getLogoSrc(context, vehicle));
 
+        // Click Button to Car page ( Vehicle Activity )
         if (position < lstVehicle.size()){
             // Click LinearLayout navigate to VehicleActivity
             itemViewHolder.ll.setOnClickListener(new View.OnClickListener() {
@@ -118,8 +114,8 @@ public class VehicleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     itemViewHolder.ll.getContext().startActivity(intent);
                 }
             });
+        // Click Button to Add Car ( add Car Dialog )
         }else if (position == lstVehicle.size()){
-            // popup menu ?
             itemViewHolder.ll.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -143,32 +139,42 @@ public class VehicleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         @SuppressLint("NotifyDataSetChanged")
                         @Override
                         public void onClick(View view) {
-                            Vehicle newVehicle = new Vehicle(lstVehicle.get(lstVehicle.size()-1).getId()+1,etDialogName.getText().toString()
-                                    , etDialogDate.getText().toString(),Long.valueOf(etDialogMileage.getText().toString()),etDialogType.getText().toString(),
-                                    etDialogBrand.getText().toString(), etDialogModel.getText().toString());
-
-
-                            Log.w("ChiuVehicle", newVehicle.toString() );
-                            // Put Request Thread Start
-                            Log.w("ChiuThreadBug-1", "Testing" );
-                            Thread threadVehicle = new Thread(new VehicleApiThread(urlPostVehicle, newVehicle));
-                            Log.w("ChiuThreadBug0", "Testing" );
-                            threadVehicle.start();
-
-                            Log.w("ChiuThreadBug1", "Testing" );
+                            Vehicle newVehicle = null;
                             try {
-                                Log.w("ChiuThreadBug2", "Testin" );
-                                threadVehicle.join();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            Log.w("ChiuThreadBug3", "Testin" );
+                                newVehicle = new Vehicle(lstVehicle.get(lstVehicle.size() - 1).getId() + 1, etDialogName.getText().toString()
+                                        , etDialogDate.getText().toString(), Long.valueOf(etDialogMileage.getText().toString()), etDialogType.getText().toString(),
+                                        etDialogBrand.getText().toString(), etDialogModel.getText().toString());
 
-                            lstVehicle.add(newVehicle);
-                            notifyItemInserted(position);
-                            notifyItemRangeChanged(position, lstVehicle.size());
-                            notifyDataSetChanged();
-                            addDialog.dismiss();
+                                // Put Request Thread Start
+                                Thread threadVehicle = new Thread(new VehicleApiThread(urlPostVehicle, newVehicle));
+                                threadVehicle.start();
+
+                                try {
+                                    threadVehicle.join();
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+
+                                // Vehicle data format error handle
+                                // Validat the format of Vehicle data
+                                // ex. Date (MFD) and Type
+                                //    -- The MFD of Vehicle has been set Date type in DATABASE
+                                //    -- The logo of Vehicle is depending on the TYPE of Vehicle
+                                if (!"201".equals(strResponse)) {
+                                    validateVehicleFormat(context, newVehicle);
+                                }else{
+                                    lstVehicle.add(newVehicle);
+                                    notifyItemInserted(position);
+                                    notifyItemRangeChanged(position, lstVehicle.size());
+                                    notifyDataSetChanged();
+                                    addDialog.dismiss();
+                                }
+                            // Handling the error from new Vehicle()
+                            // Catch exception if NOT enough Vehicle Attribute
+                            } catch (Exception e) {
+                                Log.w("chiuVehicleData", "新增車輛資訊未完全" );
+                                Toast.makeText(context, "請完整輸入車輛資訊", Toast.LENGTH_LONG).show();
+                            }
                         }
                     });
 
@@ -179,7 +185,6 @@ public class VehicleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         }
                     });
 
-                    Log.w("ChiuAddCar", "Nothing");
                 }
             });
 
@@ -191,7 +196,7 @@ public class VehicleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemCount() {
-        // ADD button will be the last item
+        // Button Add Car will be the last item
         return lstVehicle.size()+1;
     }
 
@@ -258,6 +263,21 @@ public class VehicleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             return null;
         }
         return strTxt;
+    }
+
+    public static boolean validateVehicleFormat(Context context, Vehicle vehicle){
+        String regex = "^\\d{4}\\-(0?[1-9]|1[012])\\-(0?[1-9]|3[01])$";
+        Pattern pattern = Pattern.compile(regex);
+        if (!"Motorcycle".equals(vehicle.getType())
+                && !"Scooter".equals(vehicle.getType())
+                && !"Car".equals(vehicle.getType())){
+            Toast.makeText(context,"車輛種類請輸入下列其一 \n(無須輸入數字編號)：\n1. Car\t2. Motorcycle\t3. Scooter",Toast.LENGTH_LONG).show();
+            return true;
+        }else if(!pattern.matcher(vehicle.getMfd()).find()){
+            Toast.makeText(context,"出廠日期格式請按照：yyyy-MM-dd"+vehicle.getMfd()+".",Toast.LENGTH_LONG).show();
+            return true;
+        }
+        return false;
     }
 
 

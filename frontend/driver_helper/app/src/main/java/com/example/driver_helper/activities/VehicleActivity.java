@@ -7,9 +7,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,21 +18,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.driver_helper.R;
+import com.example.driver_helper.main.adapters.VehicleAdapter;
 import com.example.driver_helper.pojo.Record;
 import com.example.driver_helper.pojo.Vehicle;
 import com.example.driver_helper.vehicle.adapters.RecordAdapter;
 import com.google.gson.Gson;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 public class VehicleActivity extends AppCompatActivity {
@@ -51,12 +51,12 @@ public class VehicleActivity extends AppCompatActivity {
 
     Intent intent;
 
-    Dialog editDialog;
-    View viewDialog;
+    Dialog editDialog, deleteDialog;
+    View viewDialogEdit, viewDialogDelete;
 
     EditText etDialogName, etDialogModel, etDialogDate, etDialogMileage, etDialogBrand, etDialogType;
     Button btnDialogConfirm, btnDialogCancel;
-    String urlPutVehicle = "http://192.168.1.111:8080/vehicle/";
+    String urlVehicle = "http://192.168.1.111:8080/vehicle/";
     String strResponse;
 
     @SuppressLint({"WrongViewCast", "CutPasteId", "MissingInflatedId"})
@@ -79,12 +79,24 @@ public class VehicleActivity extends AppCompatActivity {
         // get Data From vehicleAdapter Intent
         intent = this.getIntent();
 
+
         vehicle = (Vehicle) intent.getSerializableExtra("Vehicle");
-        lstMaintenance = (List<Record>) intent.getSerializableExtra("MaintenanceList");
-        lstRefueling = (List<Record>) intent.getSerializableExtra("RefuelingList");
+
+        // Avoid Create a new Car first
+        if(intent.getSerializableExtra("MaintenanceList") != null) {
+            lstMaintenance = (List<Record>) intent.getSerializableExtra("MaintenanceList");
+        }else{
+            lstMaintenance = new ArrayList<>();
+        }
+
+        if(intent.getSerializableExtra("RefuelingList") != null) {
+            lstRefueling = (List<Record>) intent.getSerializableExtra("RefuelingList");
+        }else{
+            lstRefueling = new ArrayList<>();
+        }
 
         // Show Data in Screen
-        ivLogo.setImageResource(getLogoSrc(vehicle));
+        ivLogo.setImageResource(getLogoSrc(VehicleActivity.this, vehicle));
         tvName.setText(String.valueOf(vehicle.getName()));
         tvModel.setText(String.valueOf(vehicle.getModel()));
         tvDate.setText(String.valueOf(vehicle.getMfd()));
@@ -115,24 +127,25 @@ public class VehicleActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    // dilog
+    // dialog
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.edit){
 
+        // Edit Dialog
+        if (item.getItemId() == R.id.edit){
             //custom dialog
             editDialog = new Dialog(VehicleActivity.this);
-            viewDialog = getLayoutInflater().inflate(R.layout.dialog_edit_vehicle, null);
+            viewDialogEdit = getLayoutInflater().inflate(R.layout.dialog_edit_vehicle, null);
 
-            etDialogName = viewDialog.findViewById(R.id.edit_etName);
-            etDialogModel = viewDialog.findViewById(R.id.edit_etModel);
-            etDialogDate = viewDialog.findViewById(R.id.edit_etDate);
-            etDialogMileage = viewDialog.findViewById(R.id.edit_etMileage);
-            etDialogBrand = viewDialog.findViewById(R.id.edit_etBrand);
-            etDialogType = viewDialog.findViewById(R.id.edit_etType);
+            etDialogName = viewDialogEdit.findViewById(R.id.edit_etName);
+            etDialogModel = viewDialogEdit.findViewById(R.id.edit_etModel);
+            etDialogDate = viewDialogEdit.findViewById(R.id.edit_etDate);
+            etDialogMileage = viewDialogEdit.findViewById(R.id.edit_etMileage);
+            etDialogBrand = viewDialogEdit.findViewById(R.id.edit_etBrand);
+            etDialogType = viewDialogEdit.findViewById(R.id.edit_etType);
 
-            btnDialogConfirm = viewDialog.findViewById(R.id.btnConfirm);
-            btnDialogCancel = viewDialog.findViewById(R.id.btnCancel);
+            btnDialogConfirm = viewDialogEdit.findViewById(R.id.btnConfirm);
+            btnDialogCancel = viewDialogEdit.findViewById(R.id.btnCancel);
 
             etDialogName.setText(vehicle.getName());
             etDialogModel.setText(vehicle.getModel());
@@ -141,41 +154,52 @@ public class VehicleActivity extends AppCompatActivity {
             etDialogBrand.setText(vehicle.getBrand());
             etDialogType.setText(vehicle.getType());
 
-            editDialog.setContentView(viewDialog);
+            editDialog.setContentView(viewDialogEdit);
             editDialog.show();
 
+            // Edit Dialog Confirm Button
             btnDialogConfirm.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Vehicle updatedVehicle = new Vehicle(vehicle.getId(),etDialogName.getText().toString()
-                            , etDialogDate.getText().toString(),Long.valueOf(etDialogMileage.getText().toString()),etDialogType.getText().toString(),
-                            etDialogBrand.getText().toString(), etDialogModel.getText().toString());
-
-                    vehicle = updatedVehicle;
-                    // refresh VehicleActivity
-                    ivLogo.setImageResource(getLogoSrc(updatedVehicle));
-                    tvName.setText(String.valueOf(updatedVehicle.getName()));
-                    tvModel.setText(String.valueOf(updatedVehicle.getModel()));
-                    tvDate.setText(String.valueOf(updatedVehicle.getMfd()));
-                    tvBrand.setText(String.valueOf(updatedVehicle.getBrand()));
-                    tvMileage.setText(String.valueOf(updatedVehicle.getMileage()));
-                    Log.w("ChiuVehicle", updatedVehicle.toString() );
-
-                    // Put Request Thread Start
-                    Log.w("ChiuThreadBug-1", "Testing" );
-                    Thread threadVehicle = new Thread(new VehicleApiThread(urlPutVehicle, updatedVehicle));
-                    Log.w("ChiuThreadBug0", "Testing" );
-                    threadVehicle.start();
-
-                    Log.w("ChiuThreadBug1", "Testing" );
                     try {
-                        Log.w("ChiuThreadBug2", "Testin" );
-                        threadVehicle.join();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        Vehicle updatedVehicle = new Vehicle(vehicle.getId(), etDialogName.getText().toString()
+                                , etDialogDate.getText().toString(), Long.valueOf(etDialogMileage.getText().toString()), etDialogType.getText().toString(),
+                                etDialogBrand.getText().toString(), etDialogModel.getText().toString());
+
+                        Boolean isBadValidation = VehicleAdapter.validateVehicleFormat(VehicleActivity.this, updatedVehicle);
+                        // refresh VehicleActivity
+                        if(!isBadValidation){
+                            vehicle = updatedVehicle;
+                            ivLogo.setImageResource(getLogoSrc(VehicleActivity.this, updatedVehicle));
+                            tvName.setText(String.valueOf(updatedVehicle.getName()));
+                            tvModel.setText(String.valueOf(updatedVehicle.getModel()));
+                            tvDate.setText(String.valueOf(updatedVehicle.getMfd()));
+                            tvBrand.setText(String.valueOf(updatedVehicle.getBrand()));
+                            tvMileage.setText(String.valueOf(updatedVehicle.getMileage()));
+
+
+                        // Put Request Thread Start
+                        Log.w("ChiuThreadBug-1", "Testing");
+                        Thread updateThread = new Thread(new VehicleApiThread(urlVehicle, updatedVehicle, "update"));
+                        Log.w("ChiuThreadBug0", "Testing");
+                        updateThread.start();
+
+                        Log.w("ChiuThreadBug1", "Testing");
+                        try {
+                            Log.w("ChiuThreadBug2", "Testin");
+                            updateThread.join();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        Log.w("ChiuThreadBug3", "Testin");
+
+
+                            editDialog.dismiss();
+                        }
+                    }catch (Exception e) {
+                        Log.w("chiuVehicleData", "新增車輛資訊未完全");
+                        Toast.makeText(VehicleActivity.this, "請完整輸入車輛資訊", Toast.LENGTH_LONG).show();
                     }
-                    Log.w("ChiuThreadBug3", "Testin" );
-                    editDialog.dismiss();
                 }
             });
 
@@ -186,24 +210,72 @@ public class VehicleActivity extends AppCompatActivity {
                 }
             });
 
+
+        // Delete Dialog
+        }else if (item.getItemId() == R.id.delete){
+            deleteDialog = new Dialog(VehicleActivity.this);
+            viewDialogDelete = getLayoutInflater().inflate(R.layout.dialog_delete_vehielce, null);
+
+            btnDialogConfirm = viewDialogDelete.findViewById(R.id.btnConfirm);
+            btnDialogCancel = viewDialogDelete.findViewById(R.id.btnCancel);
+
+            deleteDialog.setContentView(viewDialogDelete);
+            deleteDialog.show();
+
+            btnDialogConfirm.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    Thread deleteThread = new Thread(new VehicleApiThread(urlVehicle, vehicle ,  "delete"));
+                    Log.w("ChiuThreadBug0", "Testing" );
+                    deleteThread.start();
+
+                    try {
+                        deleteThread.join();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    // redirect to MainActivity
+                    intent = new Intent(VehicleActivity.this,MainActivity.class);
+                    VehicleActivity.this.startActivity(intent);
+
+                    deleteDialog.dismiss();
+                }
+            });
+
+            btnDialogCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    deleteDialog.dismiss();
+                }
+            });
+
         }
         return super.onOptionsItemSelected(item);
     }
 
-    public static int getLogoSrc(Vehicle vehicle){
+    public static int getLogoSrc(Context context, Vehicle vehicle){
         if ("Car".equals(vehicle.getType())) {
             return R.drawable.car;
         } else if ("Scooter".equals(vehicle.getType())){
             return R.drawable.scooter;
         }else if ("Motorcycle".equals(vehicle.getType())) {
             return R.drawable.motorcycle;
+        }else if ("add".equals(vehicle.getType())){
+            return R.drawable.add;
         }
-        return Integer.parseInt(null);
+        Toast.makeText(context, "請盡速將「"+vehicle.getName()+
+                "」車輛種類更改為下列車輛格式：1. Car 2. Motorcycle 3. Scooter",
+                Toast.LENGTH_LONG).show();
+        return R.drawable.warning;
     }
     public static int getExpense(List<Record> lst){
         int cost = 0;
-        for (Record r:lst) {
-            cost += r.getPrice();
+        if(lst != null) {
+            for (Record r : lst) {
+                cost += r.getPrice();
+            }
         }
         return cost;
     }
@@ -214,18 +286,24 @@ public class VehicleActivity extends AppCompatActivity {
     class VehicleApiThread implements Runnable{
         private String url;
         private Vehicle vehicle;
+        private String request;
 
-        public VehicleApiThread(String url, Vehicle vehicle) {
+        public VehicleApiThread(String url, Vehicle vehicle, String request) {
             this.url = url;
             this.vehicle = vehicle;
+            this.request = request;
         }
 
         @Override
         public void run() {
-            strResponse = putRequest(url, vehicle);
-            Log.w("ChiuPutRequest", strResponse);
+            if ("update".equals(request)) {
+                strResponse = putRequest(url, vehicle);
+            } else if ("delete".equals(request)) {
+                strResponse = deleteRequest(url, vehicle);
+            }
         }
     }
+
     private String putRequest(String strTxt, Vehicle vehicle){
         try {
             URL obj = new URL(strTxt+vehicle.getId());
@@ -234,8 +312,6 @@ public class VehicleActivity extends AppCompatActivity {
 
             con.setDoOutput(true);
             Log.w("ChiuDoOutput", "ChiuDoOutput");
-//            con.setDoInput(true);
-//            Log.w("ChiuDoInput", "ChiuDoInput");
 
             con.setRequestMethod("PUT");
             con.setRequestProperty("Content-Type", "application/json");
@@ -245,6 +321,7 @@ public class VehicleActivity extends AppCompatActivity {
             OutputStreamWriter out = new OutputStreamWriter(
                     con.getOutputStream());
             Log.w("ChiubeforeGson", "beforeGson" );
+
             // Vehicle convert to Json String
             Gson gson = new Gson();
             Log.w("ChiubeforeToJson", "beforeToJson" );
@@ -261,6 +338,28 @@ public class VehicleActivity extends AppCompatActivity {
             Log.w("ChiuPutRequest1", e);
         } catch (IOException e) {
             Log.w("ChiuGetRequest2", e);
+            return null;
+        }
+        return strTxt;
+    }
+
+    private String deleteRequest(String strTxt, Vehicle vehicle){
+        try {
+            URL obj = new URL(strTxt + vehicle.getId());
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+
+            con.setRequestMethod("DELETE");
+
+            OutputStreamWriter out = new OutputStreamWriter(
+                    con.getOutputStream());
+
+            int responseCode = con.getResponseCode();
+
+            return String.valueOf(responseCode);
+        } catch (MalformedURLException e) {
+            Log.w("ChiuDeleteRequest", e);
+        } catch (IOException e) {
+            Log.w("ChiuDeleteRequest", e);
             return null;
         }
         return strTxt;

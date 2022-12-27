@@ -1,10 +1,21 @@
 package com.example.driver_helper.pojo;
 
-public class Record {
+import java.io.Serializable;
+
+public class Record implements Serializable {
     private String date;
     private Long price;
     private String notes;
     private String item;
+    private Long vid;
+
+    public Record(String date, String item, Long price, String notes, Long vid) {
+        this.date = date;
+        this.price = price;
+        this.notes = notes;
+        this.item = item;
+        this.vid = vid;
+    }
 
     public String getDate() {
         return date;
@@ -38,4 +49,11 @@ public class Record {
         this.item = item;
     }
 
+    public Long getVid() {
+        return vid;
+    }
+
+    public void setVid(Long vid) {
+        this.vid = vid;
+    }
 }
