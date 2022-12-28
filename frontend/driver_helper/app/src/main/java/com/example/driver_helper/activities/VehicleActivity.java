@@ -272,7 +272,7 @@ public class VehicleActivity extends AppCompatActivity {
     }
     public static int getExpense(List<Record> lst){
         int cost = 0;
-        if(lst != null) {
+        if(lst != null && lst.size()!=0) {
             for (Record r : lst) {
                 cost += r.getPrice();
             }

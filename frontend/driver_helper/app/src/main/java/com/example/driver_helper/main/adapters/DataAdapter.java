@@ -1,5 +1,6 @@
 package com.example.driver_helper.main.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
@@ -11,28 +12,34 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.driver_helper.R;
+import com.example.driver_helper.activities.MainActivity;
 import com.example.driver_helper.activities.VehicleActivity;
 import com.example.driver_helper.pojo.MaintenanceRecord;
 import com.example.driver_helper.pojo.Record;
 import com.example.driver_helper.pojo.RefuelingRecord;
 import com.example.driver_helper.pojo.Vehicle;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 public class DataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     int row_index;
     private List<Vehicle> lstVehicle;
-    Map<Long,List<Record>> mapMaintenanceRecord;
-    Map<Long,List<Record>> mapRefuelingRecord;
+    public static Map<Long,List<Record>> mapMaintenanceRecord;
+    public static Map<Long,List<Record>> mapRefuelingRecord;
     private Context context;
 
     public DataAdapter(Context context, List<Vehicle> lstVehicle, Map<Long, List<Record>> mapMaintenanceRecord, Map<Long, List<Record>> mapRefuelingRecord) {
         this.lstVehicle = lstVehicle;
-        this.mapMaintenanceRecord = mapMaintenanceRecord;
-        this.mapRefuelingRecord = mapRefuelingRecord;
+        DataAdapter.mapMaintenanceRecord = mapMaintenanceRecord;
+        DataAdapter.mapRefuelingRecord = mapRefuelingRecord;
         this.context = context;
     }
 
@@ -51,6 +58,17 @@ public class DataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         List<Record> lstRefueling = mapRefuelingRecord.get(vehicle.getId());
         pageViewHolder.tvCarName.setText("  "+ vehicle.getName());
 
+        if (lstVehicle.isEmpty()||lstVehicle.size()==0) {
+            TextView tvEmpty = ((Activity)context).findViewById(R.id.tvVehicleEmpty);
+            tvEmpty.setVisibility(View.VISIBLE);
+            ViewPager2 vp = ((Activity)context).findViewById(R.id.ViewPager2DataList);
+            vp.setVisibility(View.GONE);
+        }else{
+            TextView tvEmpty = ((Activity)context).findViewById(R.id.tvVehicleEmpty);
+            tvEmpty.setVisibility(View.GONE);
+            ViewPager2 vp = ((Activity)context).findViewById(R.id.ViewPager2DataList);
+            vp.setVisibility(View.VISIBLE);
+        }
         //設定圖片及大小
         Drawable leftDrawable = ContextCompat.getDrawable(context, VehicleActivity.getLogoSrc(context ,vehicle));
         leftDrawable.setBounds(0, 0, 90, 90);
@@ -58,19 +76,20 @@ public class DataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         pageViewHolder.tvName1.setText("總支出");
         pageViewHolder.tvName2.setText("總里程");
-        pageViewHolder.tvName3.setText("上筆支出");
+        pageViewHolder.tvName3.setText("已陪伴您");
+        pageViewHolder.tvNumber1.setText(String.valueOf(VehicleActivity.getExpense(lstMaintenance) + VehicleActivity.getExpense(lstRefueling)));
         pageViewHolder.tvNumber2.setText(String.valueOf(vehicle.getMileage()));
 
-        if (lstMaintenance != null && lstMaintenance.size() != 0) {
-            pageViewHolder.tvNumber1.setText(String.valueOf(VehicleActivity.getExpense(lstMaintenance) + VehicleActivity.getExpense(lstRefueling)));
-            pageViewHolder.tvNumber3.setText(String.valueOf(lstMaintenance.get(lstMaintenance.size() - 1).getPrice()));
-        } else if (lstRefueling !=null){
-            pageViewHolder.tvNumber1.setText(String.valueOf(VehicleActivity.getExpense(lstRefueling)));
-            pageViewHolder.tvNumber3.setText("0");
-        }else{
-            pageViewHolder.tvNumber1.setText("0");
-            pageViewHolder.tvNumber3.setText("0");
+        // 計算日期
+        int daysBetween = 0;
+        try {
+             daysBetween = daysBetween(new SimpleDateFormat("yyyy-MM-dd").parse(vehicle.getMfd()),
+                    new Date());
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
+
+        pageViewHolder.tvNumber3.setText(String.valueOf(daysBetween));
     }
 
     @Override
@@ -92,6 +111,15 @@ public class DataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             tvName2 = v.findViewById(R.id.textViewName2);
             tvName3 = v.findViewById(R.id.textViewName3);
         }
+    }
+    public static int daysBetween(Date date1, Date date2){
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date1);
+        long time1 = cal.getTimeInMillis();
+        cal.setTime(date2);
+        long time2 = cal.getTimeInMillis();
+        long between_days=(time2-time1)/(1000*3600*24);
+        return Integer.parseInt(String.valueOf(between_days));
     }
 
 

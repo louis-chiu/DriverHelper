@@ -1,5 +1,6 @@
 package com.example.driver_helper.main.adapters;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,6 +41,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class ToolAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<Tool> lstTool;
@@ -61,6 +64,8 @@ public class ToolAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     Button btnDialogConfirm, btnDialogCancel;
     Spinner spCarName, spGasType;
     EditText etDate, etPrice, etMileage, etNotes, etItem;
+    ArrayAdapter<String> carNameArrayAdapter, gasTypeArrayAdapter;
+
     public ToolAdapter(Context context, List<Tool> lstTool, List<Vehicle> lstVehicle, Map<Long, List<Record>> mapMaintenanceRecord, Map<Long, List<Record>> mapRefuelingRecord, List<Gas> lstGas) {
         this.lstTool = lstTool;
         this.context = context;
@@ -84,6 +89,8 @@ public class ToolAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
         Tool tool = lstTool.get(position);
+
+        initViewDialog();
 
         // create Vehicle Name List
         if (lstVehicle.size() != 0){
@@ -111,9 +118,6 @@ public class ToolAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             itemViewHolder.ll.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    addRefuelingDialog = new Dialog(context);
-                    viewDialogRefueling =  LayoutInflater.from(context).inflate(R.layout.dialog_add_refueling, null);
-
                     spCarName = viewDialogRefueling.findViewById(R.id.add_RR_spCarName);
                     etDate = viewDialogRefueling.findViewById(R.id.add_RR_etDate);
                     spGasType = viewDialogRefueling.findViewById(R.id.add_RR_spGastype);
@@ -124,9 +128,6 @@ public class ToolAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     btnDialogConfirm = viewDialogRefueling.findViewById(R.id.btnConfirm);
                     btnDialogCancel = viewDialogRefueling.findViewById(R.id.btnCancel);
 
-                    ArrayAdapter<String> carNameArrayAdapter= new ArrayAdapter<>(context, R.layout.item_spinner, lstVehicleName);
-                    ArrayAdapter<String> gasTypeArrayAdapter= new ArrayAdapter<>(context, R.layout.item_spinner, arrGasType);
-
                     spCarName.setAdapter(carNameArrayAdapter);
                     spGasType.setAdapter(gasTypeArrayAdapter);
 
@@ -134,9 +135,11 @@ public class ToolAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     addRefuelingDialog.show();
 
                     btnDialogConfirm.setOnClickListener(new View.OnClickListener() {
+                        @SuppressLint("NotifyDataSetChanged")
                         @Override
                         public void onClick(View view) {
                             Vehicle vehicle = null;
+                            Record refuelingRecord = null;
                             int sizeRecordList=0;
                             for (Vehicle v:lstVehicle) {
                                 if (v.getName().equals(spCarName.getSelectedItem().toString()))
@@ -148,26 +151,49 @@ public class ToolAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                     Log.i("ChiuMapCheck", String.valueOf(mapRefuelingRecord.get(i)));
                                 }
                             }
-                            Record refuelingRecord  = new RefuelingRecord(
-                                    Long.parseLong(String.valueOf(sizeRecordList+1)),
-                                    etDate.getText().toString(), spGasType.getSelectedItem().toString(),
-                                    calLiter(Long.parseLong(etPrice.getText().toString()),
-                                            spGasType.getSelectedItem().toString(), lstGas),
-                                    Long.parseLong(etPrice.getText().toString()),
-                                    etNotes.getText().toString(), vehicle.getId()
-                                    );
+                            try{
+                                refuelingRecord  = new RefuelingRecord(
+                                        Long.parseLong(String.valueOf(sizeRecordList+1)),
+                                        etDate.getText().toString(), spGasType.getSelectedItem().toString(),
+                                        calLiter(Long.parseLong(etPrice.getText().toString()),
+                                                spGasType.getSelectedItem().toString(), lstGas),
+                                        Long.parseLong(etPrice.getText().toString()),
+                                        etNotes.getText().toString(), vehicle.getId()
+                                );
 
-                            // !!!!!
-                            // 缺 call api post 上資料庫
 
-                            Thread threadRecord = new Thread(new RecordApiThread(urlPostRefueling, refuelingRecord));
-                            threadRecord.start();
-                            try {
-                                threadRecord.join();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
+                                // Update Vehicle Mileage
+                                if (etMileage.getText().toString().length() != 0 && etMileage.getText()!=null) {
+                                    vehicle.setMileage(Long.valueOf(etMileage.getText().toString()));
+                                    Thread threadVehicle = new Thread(new VehicleAdapter.VehicleApiThread(
+                                            VehicleAdapter.urlPostVehicle, vehicle));
+                                    threadVehicle.start();
+                                    try {
+                                        threadVehicle.join();
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                                // Create Refueling Record
+                                Thread threadRecord = new Thread(new RecordApiThread(urlPostRefueling, refuelingRecord));
+                                threadRecord.start();
+                                try {
+                                    threadRecord.join();
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                if (!"201".equals(strResponse)){
+                                    validateDateFormat(context, refuelingRecord);
+                                }else{
+                                    DataAdapter.mapRefuelingRecord.get(vehicle.getId()).add(refuelingRecord);
+                                    MainActivity.dataAdapter.notifyDataSetChanged();
+                                    addRefuelingDialog.dismiss();
+                                }
+                            }catch (Exception e){
+                                Toast.makeText(context, "請至少輸入加油日期及金額", Toast.LENGTH_LONG).show();
                             }
-                            addRefuelingDialog.dismiss();
+
                         }
                     });
 
@@ -185,8 +211,6 @@ public class ToolAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             itemViewHolder.ll.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    addMaintenanceDialog = new Dialog(context);
-                    viewDialogMaintenance =  LayoutInflater.from(context).inflate(R.layout.dialog_add_maintenance, null);
 
                     spCarName = viewDialogMaintenance.findViewById(R.id.add_MR_spCarName);
                     etDate = viewDialogMaintenance.findViewById(R.id.add_MR_etDate);
@@ -198,17 +222,17 @@ public class ToolAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     btnDialogConfirm = viewDialogMaintenance.findViewById(R.id.btnConfirm);
                     btnDialogCancel = viewDialogMaintenance.findViewById(R.id.btnCancel);
 
-                    ArrayAdapter<String> carNameArrayAdapter= new ArrayAdapter<>(context, R.layout.item_spinner, lstVehicleName);
-
                     spCarName.setAdapter(carNameArrayAdapter);
 
                     addMaintenanceDialog.setContentView(viewDialogMaintenance);
                     addMaintenanceDialog.show();
 
                     btnDialogConfirm.setOnClickListener(new View.OnClickListener() {
+                        @SuppressLint("NotifyDataSetChanged")
                         @Override
                         public void onClick(View view) {
                             Vehicle vehicle = null;
+                            Record maintenanceRecord =null;
                             int sizeRecordList = 0;
                             for (Vehicle v:lstVehicle) {
                                 if (v.getName().equals(spCarName.getSelectedItem().toString()))
@@ -219,25 +243,54 @@ public class ToolAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                     sizeRecordList += mapMaintenanceRecord.get(i).size();
                             }
                             Log.w("ChiuMapSize", mapMaintenanceRecord.toString() );
-                            Record maintenanceRecord = new MaintenanceRecord(
-                                    Long.parseLong(String.valueOf(sizeRecordList+1)),
-                                    etDate.getText().toString(), etItem.getText().toString(),
-                                    Long.parseLong(etPrice.getText().toString()),
-                                    etNotes.getText().toString(), vehicle.getId()
-                            );
+                            try{
+                                maintenanceRecord = new MaintenanceRecord(
+                                        Long.parseLong(String.valueOf(sizeRecordList + 1)),
+                                        etDate.getText().toString(), etItem.getText().toString(),
+                                        Long.parseLong(etPrice.getText().toString()),
+                                        etNotes.getText().toString(), vehicle.getId()
+                                );
 
-                            // !!!!!
-                            // 缺 call api post 上資料庫
-                            Thread threadRecord = new Thread(new RecordApiThread(urlPostMaintenance, maintenanceRecord));
-                            threadRecord.start();
-                            try {
-                                threadRecord.join();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
+                            // Update Vehicle Mileage
+                            if (etMileage.getText().toString().length() != 0 && etMileage.getText()!=null) {
+                                vehicle.setMileage(Long.valueOf(etMileage.getText().toString()));
+                                Thread threadVehicle = new Thread(new VehicleAdapter.VehicleApiThread(
+                                        VehicleAdapter.urlPostVehicle, vehicle));
+                                threadVehicle.start();
+                                try {
+                                    threadVehicle.join();
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+
                             }
 
-                            addMaintenanceDialog.dismiss();
 
+                            // Create Maintenance Record Post Request
+                            if (etItem.getText().toString().length() == 0 || etItem.getText() == null){
+                                Toast.makeText(context, "請輸入保養項目",Toast.LENGTH_LONG).show();
+                            }else{
+                                Thread threadRecord = new Thread(new RecordApiThread(urlPostMaintenance, maintenanceRecord));
+                                threadRecord.start();
+                                try {
+                                    threadRecord.join();
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            if (!"201".equals(strResponse)){
+                                validateDateFormat(context, maintenanceRecord);
+                            }else{
+                                DataAdapter.mapMaintenanceRecord.get(vehicle.getId()).add(maintenanceRecord);
+                                MainActivity.dataAdapter.notifyDataSetChanged();
+                                addMaintenanceDialog.dismiss();
+                            }
+
+                            }catch (Exception e){
+                                Log.w("chiuTesting", e.toString());
+                                Toast.makeText(context, "請至少輸入保養日期、保養項目及金額", Toast.LENGTH_LONG).show();
+                            }
                         }
                     });
 
@@ -330,5 +383,33 @@ public class ToolAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
         return strTxt;
     }
+
+    public static boolean validateDateFormat(Context context, Record record){
+        String regex = "^\\d{4}\\-(0?[1-9]|1[012])\\-(0?[1-9]|3[01])$";
+        Pattern pattern = Pattern.compile(regex);
+        if(!pattern.matcher(record.getDate()).find()){
+            Toast.makeText(context,"日期格式請按照：yyyy-MM-dd",Toast.LENGTH_LONG).show();
+            return true;
+        }
+        return false;
+    }
+
+    private void initViewDialog(){
+
+        // Add Refueling Record Dialog
+        addRefuelingDialog = new Dialog(context);
+        viewDialogRefueling =  LayoutInflater.from(context).inflate(R.layout.dialog_add_refueling, null);
+
+        carNameArrayAdapter = new ArrayAdapter<>(context, R.layout.item_spinner, lstVehicleName);
+        gasTypeArrayAdapter = new ArrayAdapter<>(context, R.layout.item_spinner, arrGasType);
+
+
+
+        // Add Maintenance Record Dialog
+        addMaintenanceDialog = new Dialog(context);
+        viewDialogMaintenance =  LayoutInflater.from(context).inflate(R.layout.dialog_add_maintenance, null);
+
+    }
+
 }
 

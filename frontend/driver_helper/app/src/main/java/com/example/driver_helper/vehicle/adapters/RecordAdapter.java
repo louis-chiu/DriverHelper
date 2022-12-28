@@ -28,7 +28,6 @@ public class RecordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private static final int TYPE_ITEM = 1;
     private boolean isStatement = false;
 
-
     public RecordAdapter(Context context, List<Record> lstRecord){
         this.context = context;
         this.lstRecord = lstRecord;
@@ -48,11 +47,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             // Here Inflating your recyclerview item layout
             View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_expense, parent, false);
             return new ItemViewHolder(itemView);
-        } else if (viewType == TYPE_HEADER && !isStatement) {
-            // Here Inflating your header view
-            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.header_total_expense, parent, false);
-            return new HeaderViewHolder(itemView);
-        }else if (isStatement) {
+        } else if (isStatement) {
             // Here Inflating your header view
             View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.header_total_expense_statement, parent, false);
             return new StatementHeaderViewHolder(itemView);
@@ -67,9 +62,6 @@ public class RecordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             itemViewHolder.tvDate.setText(lstRecord.get(position-1).getDate());
             itemViewHolder.tvItem.setText(lstRecord.get(position-1).getItem());
             itemViewHolder.tvPrice.setText("$"+lstRecord.get(position - 1).getPrice());
-        }else if (holder instanceof HeaderViewHolder){
-            HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
-            headerViewHolder.tvTotalExpense.setText(VehicleActivity.getExpense(lstRecord)+ " 元");
         }else if (holder instanceof StatementHeaderViewHolder){
             StatementHeaderViewHolder headerViewHolder = (StatementHeaderViewHolder) holder;
 
@@ -97,14 +89,14 @@ public class RecordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return lstRecord.size()+1;
     }
 
-    private class HeaderViewHolder extends RecyclerView.ViewHolder {
-        TextView tvTotalExpense;
-
-        public HeaderViewHolder(View v) {
-            super(v);
-            tvTotalExpense =  v.findViewById(R.id.headerExpense_tvTotalExpense);
-        }
-    }
+//    private class HeaderViewHolder extends RecyclerView.ViewHolder {
+//        TextView tvTotalExpense;
+//
+//        public HeaderViewHolder(View v) {
+//            super(v);
+//            tvTotalExpense =  v.findViewById(R.id.headerExpense_tvTotalExpense);
+//        }
+//    }
 
     private class StatementHeaderViewHolder extends RecyclerView.ViewHolder {
         TextView tvTotalExpense, tvHeader;

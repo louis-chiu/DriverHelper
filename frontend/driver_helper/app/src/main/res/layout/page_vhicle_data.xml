@@ -66,7 +66,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:text="元"
+        android:text="日"
         android:textColor="#000000"
         app:layout_constraintEnd_toEndOf="@+id/imageViewData3"
         app:layout_constraintStart_toStartOf="@+id/imageViewData3"

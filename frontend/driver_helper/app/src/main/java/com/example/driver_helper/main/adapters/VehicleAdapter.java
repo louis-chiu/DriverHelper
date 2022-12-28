@@ -48,8 +48,8 @@ public class VehicleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     Dialog addDialog;
     View viewDialog;
-    String urlPostVehicle = "http://192.168.1.111:8080/vehicle";
-    String strResponse;
+    public static String urlPostVehicle = "http://192.168.1.111:8080/vehicle";
+    private static String strResponse;
 
     private Intent intent;
 
@@ -88,7 +88,7 @@ public class VehicleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         if (position == lstVehicle.size()) {
             vehicle = new Vehicle("新增車輛", "add");
         }else{
-             vehicle= lstVehicle.get(position);
+            vehicle= lstVehicle.get(position);
         }
 
         Log.w("TestingSize", String.valueOf(lstVehicle.size()) );
@@ -114,7 +114,8 @@ public class VehicleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     itemViewHolder.ll.getContext().startActivity(intent);
                 }
             });
-        // Click Button to Add Car ( add Car Dialog )
+
+            // Click Button to Add Car ( add Car Dialog )
         }else if (position == lstVehicle.size()){
             itemViewHolder.ll.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -141,7 +142,14 @@ public class VehicleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         public void onClick(View view) {
                             Vehicle newVehicle = null;
                             try {
-                                newVehicle = new Vehicle(lstVehicle.get(lstVehicle.size() - 1).getId() + 1, etDialogName.getText().toString()
+                                Long vid;
+                                if(lstVehicle.isEmpty()) {
+                                    vid = 1L;
+                                }else {
+                                    vid = lstVehicle.get(lstVehicle.size() - 1).getId() + 1;
+
+                                }
+                                newVehicle = new Vehicle(vid, etDialogName.getText().toString()
                                         , etDialogDate.getText().toString(), Long.valueOf(etDialogMileage.getText().toString()), etDialogType.getText().toString(),
                                         etDialogBrand.getText().toString(), etDialogModel.getText().toString());
 
@@ -173,6 +181,7 @@ public class VehicleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                             // Catch exception if NOT enough Vehicle Attribute
                             } catch (Exception e) {
                                 Log.w("chiuVehicleData", "新增車輛資訊未完全" );
+                                Log.w("chiuVehicleData", e.toString());
                                 Toast.makeText(context, "請完整輸入車輛資訊", Toast.LENGTH_LONG).show();
                             }
                         }
@@ -215,7 +224,7 @@ public class VehicleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     // Vehicle API Thread
     // call api to get data
-    class VehicleApiThread implements Runnable{
+    static class VehicleApiThread implements Runnable{
         private String url;
         private Vehicle vehicle;
 
@@ -230,7 +239,7 @@ public class VehicleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             Log.w("ChiuPutRequest", strResponse);
         }
     }
-    private String postRequest(String strTxt, Vehicle vehicle){
+    private static String postRequest(String strTxt, Vehicle vehicle){
         try {
             URL obj = new URL(strTxt);
             Log.w("ChiuURL", strTxt);
@@ -266,18 +275,18 @@ public class VehicleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     public static boolean validateVehicleFormat(Context context, Vehicle vehicle){
-        String regex = "^\\d{4}\\-(0?[1-9]|1[012])\\-(0?[1-9]|3[01])$";
-        Pattern pattern = Pattern.compile(regex);
-        if (!"Motorcycle".equals(vehicle.getType())
-                && !"Scooter".equals(vehicle.getType())
-                && !"Car".equals(vehicle.getType())){
-            Toast.makeText(context,"車輛種類請輸入下列其一 \n(無須輸入數字編號)：\n1. Car\t2. Motorcycle\t3. Scooter",Toast.LENGTH_LONG).show();
-            return true;
-        }else if(!pattern.matcher(vehicle.getMfd()).find()){
-            Toast.makeText(context,"出廠日期格式請按照：yyyy-MM-dd"+vehicle.getMfd()+".",Toast.LENGTH_LONG).show();
-            return true;
-        }
-        return false;
+            String regex = "^\\d{4}\\-(0?[1-9]|1[012])\\-(0?[1-9]|3[01])$";
+            Pattern pattern = Pattern.compile(regex);
+            if (!"Motorcycle".equals(vehicle.getType())
+                    && !"Scooter".equals(vehicle.getType())
+                    && !"Car".equals(vehicle.getType())){
+                Toast.makeText(context,"車輛種類請輸入下列其一 \n(無須輸入數字編號)：\n1. Car\t2. Motorcycle\t3. Scooter",Toast.LENGTH_LONG).show();
+                return true;
+            }else if(!pattern.matcher(vehicle.getMfd()).find()){
+                Toast.makeText(context,"出廠日期格式請按照：yyyy-MM-dd",Toast.LENGTH_LONG).show();
+                return true;
+            }
+            return false;
     }
 
 

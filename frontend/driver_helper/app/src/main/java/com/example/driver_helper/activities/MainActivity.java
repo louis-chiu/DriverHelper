@@ -72,9 +72,9 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView rvToolList;
     RecyclerView rvVehicleList;
     ViewPager2 vpDataList;
-    DataAdapter dataAdapter;
+    public static DataAdapter dataAdapter;
     ToolAdapter toolAdapter;
-    VehicleAdapter vehicleAdapter;
+    public static VehicleAdapter vehicleAdapter;
 
     String s1="";
     String s2="";
