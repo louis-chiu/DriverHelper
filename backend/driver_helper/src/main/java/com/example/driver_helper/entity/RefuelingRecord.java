@@ -15,8 +15,8 @@ public class RefuelingRecord {
 
     @Id
     @NonNull
-    @Column(name = "Rid")
-    private Long rid;
+    @Column(name = "id")
+    private Long id;
 
     @Column(name = "date")
     private String date;

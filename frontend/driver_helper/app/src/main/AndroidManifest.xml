@@ -16,6 +16,13 @@
         android:theme="@style/Theme.Driver_helper"
         tools:targetApi="31">
         <activity
+            android:name=".activities.RecordActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".activities.ExpenseStatementActivity"
             android:exported="false">
             <meta-data

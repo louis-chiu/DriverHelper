@@ -14,8 +14,8 @@ public class MaintenanceRecord {
 
     @Id
     @NonNull
-    @Column(name = "Mid")
-    private Long mid;
+    @Column(name = "id")
+    private Long id;
 
     @Column(name = "date")
     private String date;

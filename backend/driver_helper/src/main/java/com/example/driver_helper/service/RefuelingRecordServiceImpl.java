@@ -37,7 +37,7 @@ public class RefuelingRecordServiceImpl implements RefuelingRecordService{
     public RefuelingRecord updateRecord(RefuelingRecord refuelingRecord, Long rId) {
         Optional<RefuelingRecord> wrappedRecord = refuelingRecordRepository.findById(rId);
         RefuelingRecord unwrapRecord = unwrapRefuelingRecord(wrappedRecord, rId);
-        unwrapRecord.setRid(refuelingRecord.getRid());
+        unwrapRecord.setId(refuelingRecord.getId());
         unwrapRecord.setNotes(refuelingRecord.getNotes());
         unwrapRecord.setLiter(refuelingRecord.getLiter());
         unwrapRecord.setDate(refuelingRecord.getDate());

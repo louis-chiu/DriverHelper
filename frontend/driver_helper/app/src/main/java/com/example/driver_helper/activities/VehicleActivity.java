@@ -2,6 +2,7 @@ package com.example.driver_helper.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -9,6 +10,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -17,6 +19,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +32,7 @@ import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -39,8 +43,12 @@ public class VehicleActivity extends AppCompatActivity {
 
 
     ImageView ivLogo;
+
     TextView tvName, tvModel, tvDate, tvMileage, tvExpense, tvBrand;
+    TextView tvRefueling, tvMaintenance;
     RecyclerView rvMaintenance, rvRefueling;
+
+    LinearLayout linearLayoutRefueling, linearLayoutMaintenance;
 
     LinearLayoutManager lmMaintenanceList, lmRefuelingList;
     RecordAdapter maintenanceAdapter, refuelingAdapter;
@@ -49,7 +57,7 @@ public class VehicleActivity extends AppCompatActivity {
     List<Record> lstMaintenance;
     List<Record> lstRefueling;
 
-    Intent intent;
+    Intent intent, intentRecord;
 
     Dialog editDialog, deleteDialog;
     View viewDialogEdit, viewDialogDelete;
@@ -59,11 +67,18 @@ public class VehicleActivity extends AppCompatActivity {
     String urlVehicle = "http://192.168.1.111:8080/vehicle/";
     String strResponse;
 
+
     @SuppressLint({"WrongViewCast", "CutPasteId", "MissingInflatedId"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vehicle);
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
 
         ivLogo = findViewById(R.id.vehicle_ivLogo);
         tvName = findViewById(R.id.vehicle_tvName);
@@ -75,14 +90,23 @@ public class VehicleActivity extends AppCompatActivity {
         rvMaintenance = findViewById(R.id.vehicle_rvMaintenance);
         rvRefueling = findViewById(R.id.vehicle_rvRefueling);
 
+        tvRefueling = findViewById(R.id.tvRefueling);
+        tvMaintenance = findViewById(R.id.tvMaintenance);
+
+        // set icon in TextView
+        Drawable refuelingDrawable = ContextCompat.getDrawable(this, R.drawable.gas_pump);
+        refuelingDrawable.setBounds(0, 0, 100, 100);
+        tvRefueling.setCompoundDrawables(refuelingDrawable, null, null, null);
+
+        Drawable maintenanceDrawable = ContextCompat.getDrawable(this, R.drawable.wrench);
+        maintenanceDrawable.setBounds(0, 0, 80, 80);
+        tvMaintenance.setCompoundDrawables(maintenanceDrawable, null, null, null);
 
         // get Data From vehicleAdapter Intent
         intent = this.getIntent();
-
-
         vehicle = (Vehicle) intent.getSerializableExtra("Vehicle");
 
-        // Avoid Create a new Car first
+        // Avoid Create a new Car
         if(intent.getSerializableExtra("MaintenanceList") != null) {
             lstMaintenance = (List<Record>) intent.getSerializableExtra("MaintenanceList");
         }else{
@@ -94,6 +118,46 @@ public class VehicleActivity extends AppCompatActivity {
         }else{
             lstRefueling = new ArrayList<>();
         }
+
+        // set Onclick Redirect to RecordActivity
+        linearLayoutRefueling = findViewById(R.id.llRefueling);
+        linearLayoutMaintenance = findViewById(R.id.llMaintenance);
+
+        linearLayoutRefueling.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                intentRecord = new Intent(VehicleActivity.this, RecordActivity.class);
+                intentRecord.putExtra("Vehicle",  vehicle);
+                intentRecord.putExtra("RecordList", (Serializable) lstRefueling);
+                intentRecord.putExtra("Backup",(Serializable) lstMaintenance);
+                intentRecord.putExtra("RecordType", "Refueling");
+                startActivity(intentRecord);
+                finish();
+
+                Toast.makeText(VehicleActivity.this, "testing1", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        linearLayoutMaintenance.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                intentRecord = new Intent(VehicleActivity.this, RecordActivity.class);
+                intentRecord.putExtra("Vehicle",  vehicle);
+                intentRecord.putExtra("RecordList", (Serializable) lstMaintenance);
+                intentRecord.putExtra("Backup",(Serializable) lstMaintenance);
+                intentRecord.putExtra("RecordType", "Maintenance");
+                startActivity(intentRecord);
+                finish();
+
+                Toast.makeText(VehicleActivity.this, "testing2", Toast.LENGTH_LONG).show();
+
+
+            }
+        });
+
+
+
+
 
         // Show Data in Screen
         ivLogo.setImageResource(getLogoSrc(VehicleActivity.this, vehicle));
@@ -117,8 +181,6 @@ public class VehicleActivity extends AppCompatActivity {
         rvRefueling.setAdapter(refuelingAdapter);
 
     }
-
-
 
     // flat option menu
     @Override
@@ -230,6 +292,7 @@ public class VehicleActivity extends AppCompatActivity {
                     Log.w("ChiuThreadBug0", "Testing" );
                     deleteThread.start();
 
+
                     try {
                         deleteThread.join();
                     } catch (InterruptedException e) {
@@ -239,7 +302,7 @@ public class VehicleActivity extends AppCompatActivity {
                     // redirect to MainActivity
                     intent = new Intent(VehicleActivity.this,MainActivity.class);
                     VehicleActivity.this.startActivity(intent);
-
+                    finish();
                     deleteDialog.dismiss();
                 }
             });
@@ -364,5 +427,6 @@ public class VehicleActivity extends AppCompatActivity {
         }
         return strTxt;
     }
+
 
 }

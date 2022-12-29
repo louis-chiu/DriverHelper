@@ -3,18 +3,28 @@ package com.example.driver_helper.pojo;
 import java.io.Serializable;
 
 public class Record implements Serializable {
+    private Long id;
     private String date;
     private Long price;
     private String notes;
     private String item;
     private Long vid;
 
-    public Record(String date, String item, Long price, String notes, Long vid) {
+    public Record(Long id, String date, String item, Long price, String notes, Long vid) {
+        this.id = id;
         this.date = date;
         this.price = price;
         this.notes = notes;
         this.item = item;
         this.vid = vid;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getDate() {

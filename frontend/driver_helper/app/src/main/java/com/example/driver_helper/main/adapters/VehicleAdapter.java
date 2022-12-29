@@ -1,6 +1,7 @@
 package com.example.driver_helper.main.adapters;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -72,8 +73,6 @@ public class VehicleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_vehicle, parent, false);
-
-        // add a 新增車輛 Object
 
         return new VehicleAdapter.ItemViewHolder(itemView);
     }

@@ -30,6 +30,7 @@ import com.example.driver_helper.pojo.Vehicle;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -81,6 +82,8 @@ public class MainActivity extends AppCompatActivity {
     String s3="";
     String jsonStr;
     String strResponse;
+
+    public static Double gas_98, gas_95, gas_92, gas_diesel;
 
 
     Button btn ;
@@ -313,7 +316,7 @@ public class MainActivity extends AppCompatActivity {
                 for (int i = 0; i < maintenanceNumber; i++) {
                     jsonObject = jsonArray.getJSONObject(i);
                     MaintenanceRecord maintenanceRecord = new MaintenanceRecord(
-                            jsonObject.getLong("mid"),
+                            jsonObject.getLong("id"),
                             jsonObject.getString("date"),
                             jsonObject.getString("item"),
                             jsonObject.getLong("price"),
@@ -360,7 +363,7 @@ public class MainActivity extends AppCompatActivity {
                 for (int i = 0; i < refuelingNumber; i++) {
                     jsonObject = jsonArray.getJSONObject(i);
                     RefuelingRecord refuelingRecord = new RefuelingRecord(
-                            jsonObject.getLong("rid"),
+                            jsonObject.getLong("id"),
                             jsonObject.getString("date"),
                             jsonObject.getString("item"),
                             jsonObject.getDouble("liter"),
@@ -443,15 +446,19 @@ public class MainActivity extends AppCompatActivity {
             if ("92無鉛汽油".equals(gas.getType())){
                 tvGasName1.setText("92無鉛");
                 tvGasPrice1.setText(gas.getPrice());
+                gas_92 = Double.valueOf(gas.getPrice());
             }else if ("95無鉛汽油".equals(gas.getType())){
                 tvGasName2.setText("95無鉛");
                 tvGasPrice2.setText(gas.getPrice());
+                gas_95 = Double.valueOf(gas.getPrice());
             }else if ("98無鉛汽油".equals(gas.getType())){
                 tvGasName3.setText("98無鉛");
                 tvGasPrice3.setText(gas.getPrice());
+                gas_98 = Double.valueOf(gas.getPrice());
             }else if ("超級柴油".equals(gas.getType())){
                 tvGasName4.setText("超級柴油");
                 tvGasPrice4.setText(gas.getPrice());
+                gas_diesel = Double.valueOf(gas.getPrice());
             }
         }
     }

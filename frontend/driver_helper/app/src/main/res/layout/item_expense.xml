@@ -12,11 +12,12 @@
     app:layout_constraintTop_toTopOf="parent"
     android:orientation="vertical">
     <LinearLayout
+        android:id="@+id/itemExpense_lineaerLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingTop="15dp"
-        android:paddingBottom="15dp"
+        android:paddingTop="25dp"
+        android:paddingBottom="25dp"
         >
 
         <TextView

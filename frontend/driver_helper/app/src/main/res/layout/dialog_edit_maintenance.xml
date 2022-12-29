@@ -15,14 +15,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="  新增加油紀錄"
-        android:gravity="center"
-        android:drawableStart="@drawable/add"
-        android:textSize="24dp"
-        android:textColor="@color/black"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/edit"
+            android:gravity="center"
+            android:text="  編輯保養紀錄"
+            android:textColor="@color/black"
+            android:textSize="24dp" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -43,13 +44,15 @@
                 android:textColor="#ff000000"
                 android:textSize="18dp" />
 
-            <Spinner
-                android:id="@+id/add_RR_spCarName"
+            <TextView
+                android:id="@+id/edit_MR_tvCarName"
                 android:layout_width="match_parent"
                 android:layout_marginRight="15dp"
                 android:layout_height="60dp"
                 android:layout_weight="1.75"
-                android:gravity="center"/>
+                android:gravity="center"
+                android:textColor="#ff000000"
+                android:textSize="24dp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -62,15 +65,15 @@
                 android:layout_height="60dp"
                 android:layout_gravity="center_vertical"
 
-                android:layout_marginRight="5dp"
                 android:layout_weight="4"
+                android:layout_marginRight="5dp"
                 android:gravity="center_vertical|right"
-                android:text="加油日期："
+                android:text="保養日期："
                 android:textColor="#ff000000"
                 android:textSize="18dp" />
 
             <EditText
-                android:id="@+id/add_RR_etDate"
+                android:id="@+id/edit_MR_etDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -94,14 +97,14 @@
                 android:layout_weight="4"
                 android:layout_marginRight="5dp"
                 android:gravity="center_vertical|right"
-                android:text="油品種類："
+                android:text="項目名稱："
                 android:textColor="#ff000000"
                 android:textSize="18dp" />
 
-            <Spinner
-                android:id="@+id/add_RR_spGastype"
+            <EditText
+                android:id="@+id/edit_MR_etItem"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginRight="15dp"
                 android:layout_weight="1.75"
@@ -109,6 +112,7 @@
                 android:textColor="#ff000000"
                 android:textSize="24dp" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -122,13 +126,13 @@
                 android:layout_weight="4"
                 android:layout_marginRight="5dp"
                 android:gravity="center_vertical|right"
-                android:text="加油金額："
+                android:text="保養金額："
 
                 android:textColor="#ff000000"
                 android:textSize="18dp" />
 
             <EditText
-                android:id="@+id/add_RR_etPrice"
+                android:id="@+id/edit_MR_etPrice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -158,7 +162,7 @@
                 android:textSize="18dp" />
 
             <EditText
-                android:id="@+id/add_RR_etMileage"
+                android:id="@+id/edit_MR_etMileage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -183,12 +187,12 @@
                 android:layout_weight="4"
                 android:layout_marginRight="5dp"
                 android:gravity="center_vertical|right"
-                android:text="加油備註："
+                android:text="保養備註："
                 android:textColor="#ff000000"
                 android:textSize="18dp" />
 
             <EditText
-                android:id="@+id/add_RR_Notes"
+                android:id="@+id/edit_MR_Notes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"

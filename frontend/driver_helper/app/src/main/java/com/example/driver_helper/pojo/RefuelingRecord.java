@@ -4,22 +4,13 @@ import java.io.Serializable;
 
 public class RefuelingRecord extends Record implements Serializable {
 
-    private Long rid;
     private Double liter;
 
     public RefuelingRecord(Long rid, String date, String item, Double liter, Long price, String notes, Long vid) {
-        super(date, item, price, notes , vid);
-        this.rid = rid;
+        super(rid, date, item, price, notes , vid);
         this.liter = liter;
     }
 
-    public Long getRid() {
-        return rid;
-    }
-
-    public void setRid(Long rid) {
-        this.rid = rid;
-    }
 
     public Double getLiter() {
         return liter;

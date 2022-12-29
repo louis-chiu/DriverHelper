@@ -151,7 +151,6 @@
                 android:text="總支出："
                 android:textColor="#ff000000"
                 android:textSize="22dp" />
-
             <TextView
                 android:id="@+id/vehicle_tvExpense"
                 android:layout_width="match_parent"
@@ -169,16 +168,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+
             >
-            <TextView
-                android:layout_width="150dp"
+            <LinearLayout
+                android:id="@+id/llMaintenance"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="保養紀錄"
-                android:textColor="#ff000000"
-                android:textSize="22dp"
-                android:gravity="center"
-                android:layout_marginBottom="5dp"
-                />
+                android:gravity="center">
+                <TextView
+                    android:id="@+id/tvMaintenance"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:text="保養紀錄"
+                    android:textColor="#ff000000"
+                    android:textSize="22dp"
+                    android:gravity="center"
+                    android:layout_marginBottom="5dp"
+                    />
+            </LinearLayout>
+
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/vehicle_rvMaintenance"
@@ -194,8 +202,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:gravity="center"
+
             >
+            <LinearLayout
+                android:id="@+id/llRefueling"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center">
             <TextView
+                android:id="@+id/tvRefueling"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:text="加油紀錄"
@@ -204,6 +220,7 @@
                 android:gravity="center"
                 android:layout_marginBottom="5dp"
                 />
+            </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/vehicle_rvRefueling"
