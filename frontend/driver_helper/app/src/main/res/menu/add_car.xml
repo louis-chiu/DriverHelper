@@ -4,6 +4,6 @@
 
     <item
         android:icon="@drawable/add"
-        android:title="Item"
+        android:title="addCar"
         app:showAsAction="always" />
 </menu>

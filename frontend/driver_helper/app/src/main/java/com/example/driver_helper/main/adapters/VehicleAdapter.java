@@ -49,7 +49,7 @@ public class VehicleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     Dialog addDialog;
     View viewDialog;
-    public static String urlPostVehicle = "http://192.168.1.111:8080/vehicle";
+    public static String urlPostVehicle = "http://192.168.1.8:8080/vehicle";
     private static String strResponse;
 
     private Intent intent;

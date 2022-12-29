@@ -66,4 +66,6 @@ public class Record implements Serializable {
     public void setVid(Long vid) {
         this.vid = vid;
     }
+
+
 }

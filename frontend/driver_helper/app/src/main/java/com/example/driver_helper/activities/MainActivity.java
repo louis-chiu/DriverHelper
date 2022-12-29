@@ -52,9 +52,9 @@ public class MainActivity extends AppCompatActivity {
     Handler refuelingJsonHandler = new Handler(new RefuelingJsonParser());
     Handler maintenanceJsonHandler = new Handler(new MaintenanceJsonParser());
 
-    String urlGetVehicle = "http://192.168.1.111:8080/vehicle/all";
-    String urlGetRefueling = "http://192.168.1.111:8080/refueling/all";
-    String urlGetMaintenance = "http://192.168.1.111:8080/maintenance/all";
+    String urlGetVehicle = "http://192.168.1.8:8080/vehicle/all";
+    String urlGetRefueling = "http://192.168.1.8:8080/refueling/all";
+    String urlGetMaintenance = "http://192.168.1.8:8080/maintenance/all";
     String urlGas = "https://vipmbr.cpc.com.tw/CPCSTN/ListPriceWebService.asmx/getCPCMainProdListPrice_XML";
     XmlPullParser pullParser = Xml.newPullParser();
 

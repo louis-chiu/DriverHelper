@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -38,6 +39,10 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Statement;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 public class RecordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
@@ -52,6 +57,8 @@ public class RecordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public static final int TYPE_SIMPLE = 0;
     public static final int TYPE_COMPLEX = 2;
 
+    Date date1, date2;
+
     private int clickedPosition;
 
     Dialog deleteDialog, editDialog;
@@ -59,8 +66,8 @@ public class RecordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     Button  btnDialogConfirm, btnDialogCancel;
     Record record;
 
-    String urlMaintenance = "http://192.168.1.111:8080/maintenance/";
-    String urlRefueling = "http://192.168.1.111:8080/refueling/";
+    String urlMaintenance = "http://192.168.1.8:8080/maintenance/";
+    String urlRefueling = "http://192.168.1.8:8080/refueling/";
     String strResponse, urlRecord;
     TextView tvCarName;
     EditText etDate, etPrice, etMileage, etNotes, etItem;
@@ -84,6 +91,11 @@ public class RecordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         gasTypeArrayAdapter = new ArrayAdapter<>(context, R.layout.item_spinner, arrGasType);
+
+        // sort data by date
+        lstRecord.sort(Comparator.comparing(Record::getDate));
+        Collections.reverse(lstRecord);
+
         if (viewType == TYPE_ITEM) {
             // Here Inflating your recyclerview item layout
             View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_expense, parent, false);
@@ -108,14 +120,13 @@ public class RecordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             itemViewHolder.tvItem.setText(lstRecord.get(position-1).getItem());
             itemViewHolder.tvPrice.setText("$"+lstRecord.get(position - 1).getPrice());
             if (typeHeader == TYPE_COMPLEX){
-
                 itemViewHolder.ll.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         record = lstRecord.get(position - 1);
                         editDialog = new Dialog(context);
 
-                        if(record instanceof RefuelingRecord){
+                        if (record instanceof RefuelingRecord) {
                             viewDialogEdit = LayoutInflater.from(context).inflate(R.layout.dialog_edit_refueling, null);
                             urlRecord = urlRefueling;
 
@@ -137,7 +148,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                             spGasType.setSelection(spinnerPosition);
 
                             urlRecord = urlRefueling;
-                        }else if(record instanceof MaintenanceRecord){
+                        } else if (record instanceof MaintenanceRecord) {
                             viewDialogEdit = LayoutInflater.from(context).inflate(R.layout.dialog_edit_maintenance, null);
                             tvCarName = viewDialogEdit.findViewById(R.id.edit_MR_tvCarName);
                             etDate = viewDialogEdit.findViewById(R.id.edit_MR_etDate);
@@ -157,7 +168,6 @@ public class RecordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         }
 
 
-
                         btnDialogConfirm = viewDialogEdit.findViewById(R.id.btnConfirm);
                         btnDialogCancel = viewDialogEdit.findViewById(R.id.btnCancel);
 
@@ -167,38 +177,49 @@ public class RecordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         btnDialogConfirm.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                if (record instanceof RefuelingRecord) {
-                                    record = new RefuelingRecord(
-                                            record.getId(),
-                                            etDate.getText().toString(), spGasType.getSelectedItem().toString(),
-                                            Double.parseDouble(etPrice.getText().toString())/getGasPrice(spGasType.getSelectedItem().toString()),
-                                            Long.parseLong(etPrice.getText().toString()),
-                                            etNotes.getText().toString(),
-                                            vehicle.getId()
-                                    );
-
-                                }else if (record instanceof MaintenanceRecord){
-                                    record = new MaintenanceRecord(
-                                            record.getId(),
-                                            etDate.getText().toString(),
-                                            etItem.getText().toString(),
-                                            Long.parseLong(etPrice.getText().toString()),
-                                            etNotes.getText().toString(), vehicle.getId()
-                                    );
-                                }
-
-                                Thread editThread = new Thread(new RecordApiThread(urlRecord, record,"update"));
-                                Log.w("ChiuThreadBug0", "Testing" );
-                                editThread.start();
-
                                 try {
-                                    editThread.join();
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
+                                    if (record instanceof RefuelingRecord) {
+                                        record = new RefuelingRecord(
+                                                record.getId(),
+                                                etDate.getText().toString(), spGasType.getSelectedItem().toString(),
+                                                Double.parseDouble(etPrice.getText().toString()) / getGasPrice(spGasType.getSelectedItem().toString()),
+                                                Long.parseLong(etPrice.getText().toString()),
+                                                etNotes.getText().toString(),
+                                                vehicle.getId()
+                                        );
+
+                                    } else if (record instanceof MaintenanceRecord) {
+                                        record = new MaintenanceRecord(
+                                                record.getId(),
+                                                etDate.getText().toString(),
+                                                etItem.getText().toString(),
+                                                Long.parseLong(etPrice.getText().toString()),
+                                                etNotes.getText().toString(), vehicle.getId()
+                                        );
+                                    }
+
+                                    Thread editThread = new Thread(new RecordApiThread(urlRecord, record, "update"));
+                                    Log.w("ChiuThreadBug0", "Testing");
+                                    editThread.start();
+
+                                    try {
+                                        editThread.join();
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    if (!"200".equals(strResponse)) {
+                                        ToolAdapter.validateDateFormat(context, record);
+                                    }else{
+                                        lstRecord.set(position - 1, record);
+                                        notifyDataSetChanged();
+                                        editDialog.dismiss();
+                                    }
+
+                                }catch (Exception e){
+                                    Toast.makeText(context, "請完整輸入資訊", Toast.LENGTH_LONG).show();
+                                    Log.w("chiuUpdateFailed", e.toString() );
                                 }
-                                lstRecord.set(position-1, record);
-                                notifyDataSetChanged();
-                                editDialog.dismiss();
                             }
                         });
 
@@ -218,9 +239,9 @@ public class RecordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         deleteDialog = new Dialog(context);
                         viewDialogDelete = LayoutInflater.from(context).inflate(R.layout.dialog_delete_record, null);
 
-                        if(record instanceof RefuelingRecord){
+                        if (record instanceof RefuelingRecord) {
                             urlRecord = urlRefueling;
-                        }else if(lstRecord.get(0) instanceof MaintenanceRecord){
+                        } else if (lstRecord.get(0) instanceof MaintenanceRecord) {
                             urlRecord = urlMaintenance;
                         }
 
@@ -235,8 +256,8 @@ public class RecordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                             @Override
                             public void onClick(View view) {
 
-                                Thread deleteThread = new Thread(new RecordApiThread(urlRecord, record ,  "delete"));
-                                Log.w("ChiuThreadBug0", "Testing" );
+                                Thread deleteThread = new Thread(new RecordApiThread(urlRecord, record, "delete"));
+                                Log.w("ChiuThreadBug0", "Testing");
                                 deleteThread.start();
 
                                 try {
@@ -245,7 +266,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                     e.printStackTrace();
                                 }
 
-                                lstRecord.remove(position-1);
+                                lstRecord.remove(position - 1);
                                 notifyDataSetChanged();
                                 deleteDialog.dismiss();
                             }
@@ -260,6 +281,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         return false;
                     }
                 });
+
             }
         }else if (holder instanceof HeaderViewHolder){
             HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
@@ -377,9 +399,9 @@ public class RecordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             Log.w("Chiu1", String.valueOf(responseCode));
             return String.valueOf(responseCode);
         } catch (MalformedURLException e) {
-            Log.w("ChiuPutRequest1", e);
+            Log.w("ChiuPutRequest1", e.toString());
         } catch (IOException e) {
-            Log.w("ChiuGetRequest2", e);
+            Log.w("ChiuPutRequest2", e.toString());
             return null;
         }
         return strTxt;

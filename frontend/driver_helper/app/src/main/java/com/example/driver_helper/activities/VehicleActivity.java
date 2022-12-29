@@ -64,7 +64,7 @@ public class VehicleActivity extends AppCompatActivity {
 
     EditText etDialogName, etDialogModel, etDialogDate, etDialogMileage, etDialogBrand, etDialogType;
     Button btnDialogConfirm, btnDialogCancel;
-    String urlVehicle = "http://192.168.1.111:8080/vehicle/";
+    String urlVehicle = "http://192.168.1.8:8080/vehicle/";
     String strResponse;
 
 
@@ -144,7 +144,7 @@ public class VehicleActivity extends AppCompatActivity {
                 intentRecord = new Intent(VehicleActivity.this, RecordActivity.class);
                 intentRecord.putExtra("Vehicle",  vehicle);
                 intentRecord.putExtra("RecordList", (Serializable) lstMaintenance);
-                intentRecord.putExtra("Backup",(Serializable) lstMaintenance);
+                intentRecord.putExtra("Backup",(Serializable) lstRefueling);
                 intentRecord.putExtra("RecordType", "Maintenance");
                 startActivity(intentRecord);
                 finish();

@@ -50,8 +50,8 @@ public class ToolAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<Gas> lstGas;
 
     String strResponse;
-    String urlPostMaintenance = "http://192.168.1.111:8080/maintenance/vehicle/";
-    String urlPostRefueling = "http://192.168.1.111:8080/refueling/vehicle/";
+    String urlPostMaintenance = "http://192.168.1.8:8080/maintenance/vehicle/";
+    String urlPostRefueling = "http://192.168.1.8:8080/refueling/vehicle/";
 
     List<Vehicle> lstVehicle;
     Map<Long,List<Record>> mapMaintenanceRecord;
